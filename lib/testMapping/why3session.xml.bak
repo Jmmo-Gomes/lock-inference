@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
+"http://why3.lri.fr/why3session.dtd">
+<why3session shape_version="6">
+<prover id="0" name="Z3" version="4.8.6" timelimit="1" steplimit="0" memlimit="1000"/>
+<prover id="1" name="CVC4" version="1.7" timelimit="1" steplimit="0" memlimit="1000"/>
+<file format="ocaml">
+<path name=".."/><path name="testMapping.ml"/>
+<theory name="TestMapping">
+ <goal name="IntMap.Ord.compare_pre_order" proved="true">
+ <proof prover="1"><result status="valid" time="0.11" steps="34140"/></proof>
+ </goal>
+ <goal name="ClassMethodInfoMap.Ord.compare_pre_order" proved="true">
+ <proof prover="1"><result status="valid" time="0.10" steps="32903"/></proof>
+ </goal>
+ <goal name="firstElement&#39;vc" expl="VC for firstElement" proved="true">
+ <proof prover="1"><result status="valid" time="0.28" steps="41000"/></proof>
+ </goal>
+ <goal name="append_item&#39;vc" expl="VC for append_item" proved="true">
+ <proof prover="1"><result status="valid" time="0.22" steps="47332"/></proof>
+ </goal>
+ <goal name="computeResourceMap&#39;vc" expl="VC for computeResourceMap">
+ <proof prover="1" obsolete="true"><result status="valid" time="0.10" steps="31956"/></proof>
+ </goal>
+ <goal name="isResourceParameter&#39;vc" expl="VC for isResourceParameter">
+ <proof prover="1" obsolete="true"><result status="valid" time="0.32" steps="50681"/></proof>
+ </goal>
+ <goal name="tryRes&#39;vc" expl="VC for tryRes">
+ <proof prover="0" obsolete="true"><result status="timeout" time="1.00" steps="1458979"/></proof>
+ <proof prover="1" obsolete="true"><result status="valid" time="0.23" steps="47520"/></proof>
+ </goal>
+ <goal name="classNotFound&#39;vc" expl="VC for classNotFound">
+ </goal>
+ <goal name="computeLine&#39;vc" expl="VC for computeLine">
+ </goal>
+ <goal name="computeResource&#39;vc" expl="VC for computeResource">
+ </goal>
+</theory>
+</file>
+</why3session>

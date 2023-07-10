@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
+"http://why3.lri.fr/why3session.dtd">
+<why3session shape_version="6">
+<prover id="0" name="Z3" version="4.8.6" timelimit="1" steplimit="0" memlimit="1000"/>
+<prover id="1" name="CVC4" version="1.7" timelimit="1" steplimit="0" memlimit="1000"/>
+<file format="ocaml" proved="true">
+<path name=".."/><path name="testResourceGroup.ml"/>
+<theory name="TestResourceGroup">
+ <goal name="setId&#39;vc" expl="VC for setId">
+ </goal>
+ <goal name="add&#39;vc" expl="VC for add">
+ </goal>
+ <goal name="getResult&#39;vc" expl="VC for getResult">
+ <proof prover="0" obsolete="true"><result status="timeout" time="1.00" steps="1165092"/></proof>
+ <proof prover="1" obsolete="true"><result status="timeout" time="1.00" steps="74923"/></proof>
+ <transf name="split_vc" >
+  <goal name="getResult&#39;vc.0" expl="variant decrease">
+  <proof prover="1"><result status="valid" time="0.35" steps="28462"/></proof>
+  </goal>
+  <goal name="getResult&#39;vc.1" expl="precondition">
+  <proof prover="1"><result status="valid" time="0.19" steps="24953"/></proof>
+  </goal>
+  <goal name="getResult&#39;vc.2" expl="precondition">
+  <proof prover="1"><result status="valid" time="0.19" steps="24968"/></proof>
+  </goal>
+  <goal name="getResult&#39;vc.3" expl="postcondition">
+  <proof prover="0" obsolete="true"><result status="timeout" time="1.00" steps="798231"/></proof>
+  <proof prover="1" obsolete="true"><result status="timeout" time="1.00" steps="78949"/></proof>
+  <transf name="split_vc" >
+   <goal name="getResult&#39;vc.3.0" expl="postcondition">
+   <proof prover="0" obsolete="true"><result status="timeout" time="1.00" steps="1096565"/></proof>
+   <proof prover="1" obsolete="true"><result status="timeout" time="1.00" steps="83210"/></proof>
+   <transf name="split_vc" >
+    <goal name="getResult&#39;vc.3.0.0" expl="postcondition">
+    <proof prover="0" obsolete="true"><result status="timeout" time="1.00" steps="1100038"/></proof>
+    <proof prover="1" obsolete="true"><result status="timeout" time="1.00" steps="92311"/></proof>
+    <transf name="split_vc" >
+     <goal name="getResult&#39;vc.3.0.0.0" expl="postcondition">
+     <proof prover="0" timelimit="30" memlimit="4000" obsolete="true"><result status="timeout" time="30.00" steps="12636674"/></proof>
+     <proof prover="1"><result status="valid" time="0.15" steps="24979"/></proof>
+     </goal>
+     <goal name="getResult&#39;vc.3.1.1.0" expl="postcondition">
+     <proof prover="0" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="12684345"/></proof>
+     <proof prover="1" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="1962181"/></proof>
+     <transf name="assert" arg1="((not (if same_location res (x1.r) then True else False) = True) -&gt; same_location res (x1.r) = False)">
+      <goal name="getResult&#39;vc.3.1.1.0.0" expl="asserted formula">
+      <proof prover="0"><result status="failure" time="0.00"/></proof>
+      <proof prover="1"><result status="failure" time="0.00"/></proof>
+      </goal>
+      <goal name="getResult&#39;vc.3.1.1.0.1" expl="postcondition">
+      <proof prover="0"><result status="failure" time="0.00"/></proof>
+      <proof prover="1"><result status="failure" time="0.00"/></proof>
+      </goal>
+     </transf>
+     </goal>
+    </transf>
+    </goal>
+    <goal name="getResult&#39;vc.3.0.1" expl="postcondition">
+    <proof prover="1"><result status="valid" time="0.17" steps="26807"/></proof>
+    </goal>
+   </transf>
+   </goal>
+   <goal name="getResult&#39;vc.3.1" expl="postcondition">
+   <proof prover="0"><result status="timeout" time="1.00" steps="795965"/></proof>
+   <proof prover="1"><result status="timeout" time="2.00" steps="139772"/></proof>
+   <transf name="split_vc" >
+    <goal name="getResult&#39;vc.3.1.0" expl="postcondition">
+    <proof prover="1"><result status="valid" time="0.28" steps="26533"/></proof>
+    </goal>
+    <goal name="getResult&#39;vc.3.1.1" expl="postcondition">
+    <proof prover="0"><result status="timeout" time="1.00" steps="1087711"/></proof>
+    <proof prover="1"><result status="timeout" time="1.00" steps="71810"/></proof>
+    <transf name="split_vc" >
+     <goal name="getResult&#39;vc.3.1.1.0" expl="postcondition">
+     <proof prover="1"><result status="valid" time="0.19" steps="25180"/></proof>
+     </goal>
+     <goal name="getResult&#39;vc.3.1.1.1" expl="postcondition">
+     <proof prover="0"><result status="timeout" time="1.00" steps="990957"/></proof>
+     <proof prover="1"><result status="timeout" time="1.00" steps="75880"/></proof>
+     <transf name="split_vc" >
+      <goal name="getResult&#39;vc.3.1.1.1.0" expl="postcondition">
+      <proof prover="0" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="12663076"/></proof>
+      <proof prover="1" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="1962008"/></proof>
+      </goal>
+      <goal name="getResult&#39;vc.3.1.1.1.1" expl="postcondition">
+      <proof prover="0" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="12659194"/></proof>
+      <proof prover="1" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="1961863"/></proof>
+      </goal>
+     </transf>
+     </goal>
+    </transf>
+    </goal>
+   </transf>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="getResult&#39;vc.4" expl="postcondition">
+  <proof prover="0"><result status="failure" time="0.00"/></proof>
+  <proof prover="1"><result status="failure" time="0.00"/></proof>
+  </goal>
+ </transf>
+ </goal>
+ <goal name="get&#39;vc" expl="VC for get">
+ </goal>
+</theory>
+</file>
+</why3session>

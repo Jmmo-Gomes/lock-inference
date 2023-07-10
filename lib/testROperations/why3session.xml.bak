@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
+"http://why3.lri.fr/why3session.dtd">
+<why3session shape_version="6">
+<prover id="0" name="Alt-Ergo" version="2.4.2" timelimit="5" steplimit="0" memlimit="1000"/>
+<prover id="1" name="Z3" version="4.8.6" timelimit="1" steplimit="0" memlimit="1000"/>
+<prover id="2" name="CVC4" version="1.7" timelimit="1" steplimit="0" memlimit="1000"/>
+<file format="ocaml">
+<path name=".."/><path name="testROperations.ml"/>
+<theory name="TestROperations">
+ <goal name="insertR&#39;vc" expl="VC for insertR" proved="true">
+ <proof prover="0" obsolete="true"><result status="valid" time="0.03" steps="6"/></proof>
+ <proof prover="2"><result status="valid" time="0.13" steps="32462"/></proof>
+ </goal>
+ <goal name="createNewRGroup&#39;vc" expl="VC for createNewRGroup" proved="true">
+ <proof prover="0" obsolete="true"><result status="valid" time="0.03" steps="6"/></proof>
+ <proof prover="2"><result status="valid" time="0.37" steps="49685"/></proof>
+ </goal>
+ <goal name="insert&#39;vc" expl="VC for insert" proved="true">
+ <proof prover="0" obsolete="true"><result status="valid" time="0.03" steps="6"/></proof>
+ <proof prover="1" obsolete="true"><result status="timeout" time="1.00" steps="1036343"/></proof>
+ <proof prover="2"><result status="valid" time="0.23" steps="53108"/></proof>
+ </goal>
+ <goal name="insertRO&#39;vc" expl="VC for insertRO" proved="true">
+ <proof prover="0" obsolete="true"><result status="valid" time="0.03" steps="6"/></proof>
+ <proof prover="2"><result status="valid" time="0.09" steps="32462"/></proof>
+ </goal>
+ <goal name="noReadLocks&#39;vc" expl="VC for noReadLocks" proved="true">
+ <proof prover="2"><result status="valid" time="0.14" steps="41432"/></proof>
+ </goal>
+ <goal name="firstWriteBefore&#39;vc" expl="VC for firstWriteBefore">
+ </goal>
+ <goal name="firstReadBefore&#39;vc" expl="VC for firstReadBefore">
+ </goal>
+ <goal name="computeROperations&#39;vc" expl="VC for computeROperations">
+ <proof prover="0" obsolete="true"><result status="valid" time="0.04" steps="6"/></proof>
+ </goal>
+ <goal name="getPair&#39;vc" expl="VC for getPair">
+ <proof prover="0" obsolete="true"><result status="timeout" time="5.00"/></proof>
+ </goal>
+ <goal name="computeBindings&#39;vc" expl="VC for computeBindings">
+ <proof prover="0" obsolete="true"><result status="failure" time="0.00"/></proof>
+ </goal>
+</theory>
+</file>
+</why3session>

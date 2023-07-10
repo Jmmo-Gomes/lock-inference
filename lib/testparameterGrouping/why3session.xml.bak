@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
+"http://why3.lri.fr/why3session.dtd">
+<why3session shape_version="6">
+<prover id="0" name="CVC4" version="1.7" timelimit="1" steplimit="0" memlimit="1000"/>
+<prover id="1" name="Z3" version="4.8.6" timelimit="1" steplimit="0" memlimit="1000"/>
+<file format="ocaml">
+<path name=".."/><path name="testparameterGrouping.ml"/>
+<theory name="TestparameterGrouping">
+ <goal name="Parameters.Ord.compare_pre_order" proved="true">
+ <proof prover="0"><result status="valid" time="0.11" steps="36964"/></proof>
+ </goal>
+ <goal name="Handled.Ord.compare_pre_order" proved="true">
+ <proof prover="0"><result status="valid" time="0.14" steps="36986"/></proof>
+ </goal>
+ <goal name="conflict&#39;vc" expl="VC for conflict" proved="true">
+ <proof prover="0"><result status="valid" time="0.15" steps="36029"/></proof>
+ </goal>
+ <goal name="removeFromGroupSet&#39;vc" expl="VC for removeFromGroupSet" proved="true">
+ <proof prover="0"><result status="valid" time="0.23" steps="46986"/></proof>
+ </goal>
+ <goal name="addNewRGroup&#39;vc" expl="VC for addNewRGroup" proved="true">
+ <proof prover="0"><result status="valid" time="0.32" steps="51579"/></proof>
+ </goal>
+ <goal name="ropListEmpty&#39;vc" expl="VC for ropListEmpty" proved="true">
+ <proof prover="0"><result status="valid" time="0.32" steps="46843"/></proof>
+ </goal>
+ <goal name="removeR&#39;vc" expl="VC for removeR" proved="true">
+ <proof prover="0"><result status="valid" time="0.09" steps="33030"/></proof>
+ </goal>
+ <goal name="checkSBE&#39;vc" expl="VC for checkSBE">
+ <proof prover="0"><result status="timeout" time="1.00" steps="131333"/></proof>
+ <proof prover="1"><result status="timeout" time="1.00" steps="2098313"/></proof>
+ <transf name="split_vc" >
+  <goal name="checkSBE&#39;vc.0" expl="variant decrease" proved="true">
+  <proof prover="0"><result status="valid" time="0.29" steps="49407"/></proof>
+  </goal>
+  <goal name="checkSBE&#39;vc.1" expl="variant decrease" proved="true">
+  <proof prover="0"><result status="valid" time="0.25" steps="43491"/></proof>
+  </goal>
+  <goal name="checkSBE&#39;vc.2" expl="variant decrease" proved="true">
+  <proof prover="0"><result status="valid" time="0.26" steps="42629"/></proof>
+  </goal>
+  <goal name="checkSBE&#39;vc.3" expl="postcondition">
+  <proof prover="0"><result status="timeout" time="1.00" steps="111542"/></proof>
+  <proof prover="1"><result status="timeout" time="1.00" steps="1420991"/></proof>
+  <transf name="split_vc" >
+   <goal name="checkSBE&#39;vc.3.0" expl="postcondition">
+   <proof prover="0"><result status="timeout" time="1.00" steps="152075"/></proof>
+   <proof prover="1"><result status="timeout" time="1.00" steps="1318597"/></proof>
+   <transf name="split_vc" >
+    <goal name="checkSBE&#39;vc.3.0.0" expl="postcondition" proved="true">
+    <proof prover="0"><result status="valid" time="0.24" steps="44462"/></proof>
+    </goal>
+    <goal name="checkSBE&#39;vc.3.0.1" expl="postcondition" proved="true">
+    <proof prover="0"><result status="valid" time="0.10" steps="44407"/></proof>
+    </goal>
+    <goal name="checkSBE&#39;vc.3.0.2" expl="postcondition">
+    <proof prover="0" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="1589241"/></proof>
+    <proof prover="1" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="7189347"/></proof>
+    <transf name="instantiate" arg1="H7" arg2="x">
+     <goal name="checkSBE&#39;vc.3.0.2.0" expl="postcondition">
+     <transf name="eliminate_let" >
+      <goal name="checkSBE&#39;vc.3.0.2.0.0" expl="postcondition">
+      <transf name="destruct_rec" arg1="Hinst">
+       <goal name="checkSBE&#39;vc.3.0.2.0.0.0" expl="destruct premise">
+       <proof prover="0"><result status="timeout" time="1.00" steps="104498"/></proof>
+       <proof prover="1"><result status="timeout" time="1.00" steps="1098151"/></proof>
+       <transf name="split_vc" >
+        <goal name="checkSBE&#39;vc.3.0.2.0.0.0.0" expl="destruct premise">
+        <proof prover="0" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="1349651"/></proof>
+        <proof prover="1" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="7140895"/></proof>
+        </goal>
+       </transf>
+       </goal>
+       <goal name="checkSBE&#39;vc.3.0.2.0.0.1" expl="destruct premise" proved="true">
+       <proof prover="0"><result status="valid" time="0.16" steps="42759"/></proof>
+       </goal>
+       <goal name="checkSBE&#39;vc.3.0.2.0.0.2" expl="postcondition" proved="true">
+       <proof prover="0"><result status="valid" time="0.14" steps="42789"/></proof>
+       </goal>
+       <goal name="checkSBE&#39;vc.3.0.2.0.0.3" expl="postcondition" proved="true">
+       <proof prover="0"><result status="valid" time="0.12" steps="42951"/></proof>
+       </goal>
+       <goal name="checkSBE&#39;vc.3.0.2.0.0.4" expl="postcondition" proved="true">
+       <proof prover="0"><result status="valid" time="0.14" steps="42790"/></proof>
+       </goal>
+       <goal name="checkSBE&#39;vc.3.0.2.0.0.5" expl="postcondition" proved="true">
+       <proof prover="0"><result status="valid" time="0.16" steps="42814"/></proof>
+       </goal>
+       <goal name="checkSBE&#39;vc.3.0.2.0.0.6" expl="postcondition" proved="true">
+       <proof prover="0"><result status="valid" time="0.13" steps="42795"/></proof>
+       </goal>
+       <goal name="checkSBE&#39;vc.3.0.2.0.0.7" expl="postcondition" proved="true">
+       <proof prover="0"><result status="valid" time="0.14" steps="42784"/></proof>
+       </goal>
+      </transf>
+      </goal>
+     </transf>
+     </goal>
+    </transf>
+    </goal>
+   </transf>
+   </goal>
+   <goal name="checkSBE&#39;vc.3.1" expl="postcondition">
+   <proof prover="0"><result status="timeout" time="1.00" steps="100533"/></proof>
+   <proof prover="1"><result status="timeout" time="1.00" steps="1325305"/></proof>
+   <transf name="split_vc" >
+    <goal name="checkSBE&#39;vc.3.1.0" expl="postcondition" proved="true">
+    <proof prover="0"><result status="valid" time="0.30" steps="44608"/></proof>
+    </goal>
+    <goal name="checkSBE&#39;vc.3.1.1" expl="postcondition" proved="true">
+    <proof prover="0"><result status="valid" time="0.12" steps="44543"/></proof>
+    </goal>
+    <goal name="checkSBE&#39;vc.3.1.2" expl="postcondition">
+    <proof prover="0" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="1745829"/></proof>
+    <proof prover="1" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="16147805"/></proof>
+    <transf name="instantiate" arg1="H8" arg2="x2">
+     <goal name="checkSBE&#39;vc.3.1.2.0" expl="postcondition">
+     <transf name="eliminate_let" >
+      <goal name="checkSBE&#39;vc.3.1.2.0.0" expl="postcondition">
+      <transf name="destruct_rec" arg1="Hinst">
+       <goal name="checkSBE&#39;vc.3.1.2.0.0.0" expl="destruct premise">
+       <proof prover="0"><result status="timeout" time="0.49" steps="71371"/></proof>
+       <proof prover="1"><result status="highfailure" time="0.43" steps="870039"/></proof>
+       <transf name="split_vc" >
+        <goal name="checkSBE&#39;vc.3.1.2.0.0.0.0" expl="destruct premise">
+        <proof prover="0" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="1657653"/></proof>
+        <proof prover="1" timelimit="30" memlimit="4000"><result status="highfailure" time="22.59" steps="14018887"/></proof>
+        </goal>
+       </transf>
+       </goal>
+       <goal name="checkSBE&#39;vc.3.1.2.0.0.1" expl="destruct premise" proved="true">
+       <proof prover="0"><result status="valid" time="0.11" steps="42776"/></proof>
+       </goal>
+       <goal name="checkSBE&#39;vc.3.1.2.0.0.2" expl="postcondition" proved="true">
+       <proof prover="0"><result status="valid" time="0.17" steps="42958"/></proof>
+       </goal>
+       <goal name="checkSBE&#39;vc.3.1.2.0.0.3" expl="postcondition" proved="true">
+       <proof prover="0"><result status="valid" time="0.41" steps="56467"/></proof>
+       </goal>
+       <goal name="checkSBE&#39;vc.3.1.2.0.0.4" expl="postcondition" proved="true">
+       <proof prover="0"><result status="valid" time="0.17" steps="42959"/></proof>
+       </goal>
+       <goal name="checkSBE&#39;vc.3.1.2.0.0.5" expl="postcondition" proved="true">
+       <proof prover="0"><result status="valid" time="0.47" steps="57010"/></proof>
+       </goal>
+       <goal name="checkSBE&#39;vc.3.1.2.0.0.6" expl="postcondition" proved="true">
+       <proof prover="0"><result status="valid" time="0.20" steps="42963"/></proof>
+       </goal>
+       <goal name="checkSBE&#39;vc.3.1.2.0.0.7" expl="postcondition" proved="true">
+       <proof prover="0"><result status="valid" time="0.36" steps="55495"/></proof>
+       </goal>
+      </transf>
+      </goal>
+     </transf>
+     </goal>
+    </transf>
+    <transf name="instantiate" arg1="H8" arg2="x">
+     <goal name="checkSBE&#39;vc.3.1.2.0" expl="postcondition">
+     <transf name="eliminate_let" >
+      <goal name="checkSBE&#39;vc.3.1.2.0.0" expl="postcondition">
+      <transf name="destruct_rec" arg1="Hinst">
+       <goal name="checkSBE&#39;vc.3.1.2.0.0.0" expl="destruct premise">
+       <proof prover="0"><result status="timeout" time="1.00" steps="106535"/></proof>
+       <proof prover="1"><result status="highfailure" time="0.55" steps="882912"/></proof>
+       <transf name="split_vc" >
+        <goal name="checkSBE&#39;vc.3.1.2.0.0.0.0" expl="destruct premise">
+        <proof prover="0" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="1709985"/></proof>
+        <proof prover="1" timelimit="30" memlimit="4000"><result status="highfailure" time="23.87" steps="17693414"/></proof>
+        </goal>
+       </transf>
+       </goal>
+       <goal name="checkSBE&#39;vc.3.1.2.0.0.1" expl="destruct premise" proved="true">
+       <proof prover="0"><result status="valid" time="0.13" steps="42776"/></proof>
+       </goal>
+       <goal name="checkSBE&#39;vc.3.1.2.0.0.2" expl="postcondition" proved="true">
+       <proof prover="0"><result status="valid" time="0.15" steps="42925"/></proof>
+       </goal>
+       <goal name="checkSBE&#39;vc.3.1.2.0.0.3" expl="postcondition" proved="true">
+       <proof prover="0"><result status="valid" time="0.33" steps="48877"/></proof>
+       </goal>
+       <goal name="checkSBE&#39;vc.3.1.2.0.0.4" expl="postcondition" proved="true">
+       <proof prover="0"><result status="valid" time="0.13" steps="42926"/></proof>
+       </goal>
+       <goal name="checkSBE&#39;vc.3.1.2.0.0.5" expl="postcondition" proved="true">
+       <proof prover="0"><result status="valid" time="0.19" steps="42950"/></proof>
+       </goal>
+       <goal name="checkSBE&#39;vc.3.1.2.0.0.6" expl="postcondition" proved="true">
+       <proof prover="0"><result status="valid" time="0.19" steps="42931"/></proof>
+       </goal>
+       <goal name="checkSBE&#39;vc.3.1.2.0.0.7" expl="postcondition" proved="true">
+       <proof prover="0"><result status="valid" time="0.14" steps="42920"/></proof>
+       </goal>
+      </transf>
+      </goal>
+     </transf>
+     </goal>
+    </transf>
+    </goal>
+   </transf>
+   </goal>
+   <goal name="checkSBE&#39;vc.3.2" expl="postcondition" proved="true">
+   <proof prover="0"><result status="valid" time="0.12" steps="45915"/></proof>
+   </goal>
+   <goal name="checkSBE&#39;vc.3.3" expl="postcondition">
+   <proof prover="0"><result status="timeout" time="1.00" steps="166232"/></proof>
+   <proof prover="1"><result status="timeout" time="1.00" steps="1358555"/></proof>
+   <transf name="split_vc" >
+    <goal name="checkSBE&#39;vc.3.3.0" expl="postcondition" proved="true">
+    <proof prover="0"><result status="valid" time="0.22" steps="43897"/></proof>
+    </goal>
+    <goal name="checkSBE&#39;vc.3.3.1" expl="postcondition" proved="true">
+    <proof prover="0"><result status="valid" time="0.14" steps="44503"/></proof>
+    </goal>
+    <goal name="checkSBE&#39;vc.3.3.2" expl="postcondition">
+    <proof prover="0" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="1630102"/></proof>
+    <proof prover="1" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="5090806"/></proof>
+    <transf name="instantiate" arg1="H6" arg2="x">
+     <goal name="checkSBE&#39;vc.3.3.2.0" expl="postcondition">
+     <transf name="eliminate_let" >
+      <goal name="checkSBE&#39;vc.3.3.2.0.0" expl="postcondition">
+      <transf name="destruct_rec" arg1="Hinst">
+       <goal name="checkSBE&#39;vc.3.3.2.0.0.0" expl="destruct premise">
+       <proof prover="0"><result status="timeout" time="1.00" steps="77812"/></proof>
+       <proof prover="1"><result status="timeout" time="1.00" steps="867802"/></proof>
+       <transf name="split_vc" >
+        <goal name="checkSBE&#39;vc.3.3.2.0.0.0.0" expl="destruct premise">
+        <proof prover="0" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="1346094"/></proof>
+        <proof prover="1" timelimit="30" memlimit="4000"><result status="highfailure" time="18.31" steps="16668800"/></proof>
+        </goal>
+       </transf>
+       </goal>
+       <goal name="checkSBE&#39;vc.3.3.2.0.0.1" expl="destruct premise" proved="true">
+       <proof prover="0"><result status="valid" time="0.17" steps="42760"/></proof>
+       </goal>
+       <goal name="checkSBE&#39;vc.3.3.2.0.0.2" expl="postcondition" proved="true">
+       <proof prover="0"><result status="valid" time="0.22" steps="42885"/></proof>
+       </goal>
+       <goal name="checkSBE&#39;vc.3.3.2.0.0.3" expl="postcondition" proved="true">
+       <proof prover="0"><result status="valid" time="0.21" steps="43047"/></proof>
+       </goal>
+       <goal name="checkSBE&#39;vc.3.3.2.0.0.4" expl="postcondition" proved="true">
+       <proof prover="0"><result status="valid" time="0.20" steps="42886"/></proof>
+       </goal>
+       <goal name="checkSBE&#39;vc.3.3.2.0.0.5" expl="postcondition" proved="true">
+       <proof prover="0"><result status="valid" time="0.36" steps="45318"/></proof>
+       </goal>
+       <goal name="checkSBE&#39;vc.3.3.2.0.0.6" expl="postcondition" proved="true">
+       <proof prover="0"><result status="valid" time="0.26" steps="42886"/></proof>
+       </goal>
+       <goal name="checkSBE&#39;vc.3.3.2.0.0.7" expl="postcondition" proved="true">
+       <proof prover="0"><result status="valid" time="0.27" steps="42880"/></proof>
+       </goal>
+      </transf>
+      </goal>
+     </transf>
+     </goal>
+    </transf>
+    </goal>
+   </transf>
+   </goal>
+   <goal name="checkSBE&#39;vc.3.4" expl="postcondition" proved="true">
+   <proof prover="0"><result status="valid" time="0.18" steps="45919"/></proof>
+   </goal>
+   <goal name="checkSBE&#39;vc.3.5" expl="postcondition">
+   <proof prover="0"><result status="timeout" time="1.00" steps="184553"/></proof>
+   <proof prover="1"><result status="timeout" time="1.00" steps="1440200"/></proof>
+   <transf name="split_vc" >
+    <goal name="checkSBE&#39;vc.3.5.0" expl="postcondition" proved="true">
+    <proof prover="0"><result status="valid" time="0.26" steps="44764"/></proof>
+    </goal>
+    <goal name="checkSBE&#39;vc.3.5.1" expl="postcondition" proved="true">
+    <proof prover="0"><result status="valid" time="0.15" steps="44663"/></proof>
+    </goal>
+    <goal name="checkSBE&#39;vc.3.5.2" expl="postcondition">
+    <proof prover="0" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="1366816"/></proof>
+    <proof prover="1" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="11184609"/></proof>
+    </goal>
+   </transf>
+   </goal>
+   <goal name="checkSBE&#39;vc.3.6" expl="postcondition">
+   <proof prover="0"><result status="timeout" time="1.00" steps="168947"/></proof>
+   <proof prover="1"><result status="timeout" time="1.00" steps="1362788"/></proof>
+   <transf name="split_vc" >
+    <goal name="checkSBE&#39;vc.3.6.0" expl="postcondition" proved="true">
+    <proof prover="0"><result status="valid" time="0.14" steps="41859"/></proof>
+    </goal>
+    <goal name="checkSBE&#39;vc.3.6.1" expl="postcondition" proved="true">
+    <proof prover="0"><result status="valid" time="0.17" steps="44667"/></proof>
+    </goal>
+    <goal name="checkSBE&#39;vc.3.6.2" expl="postcondition">
+    <proof prover="0" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="1298780"/></proof>
+    <proof prover="1" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="12319479"/></proof>
+    </goal>
+   </transf>
+   </goal>
+   <goal name="checkSBE&#39;vc.3.7" expl="postcondition" proved="true">
+   <proof prover="0"><result status="valid" time="0.10" steps="45894"/></proof>
+   </goal>
+  </transf>
+  </goal>
+ </transf>
+ </goal>
+ <goal name="outerLoop&#39;vc" expl="VC for outerLoop">
+ </goal>
+ <goal name="checkConflict&#39;vc" expl="VC for checkConflict">
+ </goal>
+ <goal name="newRoMapCreation&#39;vc" expl="VC for newRoMapCreation">
+ </goal>
+ <goal name="ropListCycle&#39;vc" expl="VC for ropListCycle">
+ </goal>
+ <goal name="checkGrouping&#39;vc" expl="VC for checkGrouping">
+ </goal>
+ <goal name="condition2ndResource&#39;vc" expl="VC for condition2ndResource">
+ </goal>
+ <goal name="resource1Cycle&#39;vc" expl="VC for resource1Cycle">
+ </goal>
+ <goal name="addParameters&#39;vc" expl="VC for addParameters">
+ </goal>
+ <goal name="findRGroup&#39;vc" expl="VC for findRGroup">
+ </goal>
+ <goal name="addToParameters&#39;vc" expl="VC for addToParameters">
+ </goal>
+ <goal name="parameterGrouping&#39;vc" expl="VC for parameterGrouping">
+ </goal>
+</theory>
+</file>
+</why3session>

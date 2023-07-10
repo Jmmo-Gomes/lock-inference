@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
+"http://why3.lri.fr/why3session.dtd">
+<why3session shape_version="6">
+<prover id="0" name="Z3" version="4.8.6" timelimit="1" steplimit="0" memlimit="1000"/>
+<prover id="1" name="CVC4" version="1.7" timelimit="1" steplimit="0" memlimit="1000"/>
+<file format="ocaml">
+<path name=".."/><path name="testAccess.ml"/>
+<theory name="TestAccess">
+ <goal name="Access.rAccess&#39;vc" expl="VC for rAccess" proved="true">
+ <proof prover="1" timelimit="5"><result status="valid" time="0.04" steps="22442"/></proof>
+ </goal>
+ <goal name="Access.resourceAccessCons&#39;vc" expl="VC for resourceAccessCons">
+ <proof prover="0"><result status="timeout" time="1.00" steps="1744267"/></proof>
+ <proof prover="1"><result status="timeout" time="1.00" steps="242430"/></proof>
+ <transf name="split_vc" >
+  <goal name="resourceAccessCons&#39;vc.0" expl="unreachable point">
+  <proof prover="0"><result status="timeout" time="1.00" steps="1923758"/></proof>
+  <proof prover="1"><result status="timeout" time="1.00" steps="241128"/></proof>
+  <transf name="split_vc" >
+   <goal name="resourceAccessCons&#39;vc.0.0" expl="unreachable point">
+   <proof prover="0" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="23626605"/></proof>
+   <proof prover="1" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="11518699"/></proof>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="resourceAccessCons&#39;vc.1" expl="unreachable point">
+  <proof prover="0"><result status="timeout" time="1.00" steps="2135339"/></proof>
+  <proof prover="1"><result status="timeout" time="1.00" steps="242427"/></proof>
+  <transf name="split_vc" >
+   <goal name="resourceAccessCons&#39;vc.1.0" expl="unreachable point">
+   <proof prover="0" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="20527477"/></proof>
+   <proof prover="1" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="11736234"/></proof>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="resourceAccessCons&#39;vc.2" expl="unreachable point">
+  <proof prover="0"><result status="timeout" time="1.00" steps="2546349"/></proof>
+  <proof prover="1"><result status="timeout" time="1.00" steps="170804"/></proof>
+  <transf name="split_vc" >
+   <goal name="resourceAccessCons&#39;vc.2.0" expl="unreachable point">
+   <proof prover="0" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="17891332"/></proof>
+   <proof prover="1" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="11736226"/></proof>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="resourceAccessCons&#39;vc.3" expl="unreachable point">
+  <proof prover="0"><result status="timeout" time="1.00" steps="1847772"/></proof>
+  <proof prover="1"><result status="timeout" time="1.00" steps="170929"/></proof>
+  <transf name="split_vc" >
+   <goal name="resourceAccessCons&#39;vc.3.0" expl="unreachable point">
+   <proof prover="0" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="17965813"/></proof>
+   <proof prover="1" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="11736218"/></proof>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="resourceAccessCons&#39;vc.4" expl="unreachable point">
+  <proof prover="0"><result status="timeout" time="1.00" steps="1891815"/></proof>
+  <proof prover="1"><result status="timeout" time="1.00" steps="241244"/></proof>
+  <transf name="split_vc" >
+   <goal name="resourceAccessCons&#39;vc.4.0" expl="unreachable point">
+   <proof prover="0" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="19217091"/></proof>
+   <proof prover="1" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="11736210"/></proof>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="resourceAccessCons&#39;vc.5" expl="unreachable point">
+  <proof prover="0"><result status="timeout" time="1.00" steps="1841472"/></proof>
+  <proof prover="1"><result status="timeout" time="1.00" steps="241089"/></proof>
+  <transf name="split_vc" >
+   <goal name="resourceAccessCons&#39;vc.5.0" expl="unreachable point">
+   <proof prover="0" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="17683930"/></proof>
+   <proof prover="1" timelimit="30" memlimit="4000"><result status="timeout" time="30.00" steps="11519364"/></proof>
+   </goal>
+  </transf>
+  </goal>
+ </transf>
+ </goal>
+ <goal name="Access.hasReadAccess&#39;vc" expl="VC for hasReadAccess" proved="true">
+ <proof prover="1"><result status="valid" time="0.07" steps="23497"/></proof>
+ </goal>
+ <goal name="Access.hasWriteAccess&#39;vc" expl="VC for hasWriteAccess" proved="true">
+ <proof prover="1"><result status="valid" time="0.11" steps="23497"/></proof>
+ </goal>
+ <goal name="Access.replaceFirstWrite&#39;vc" expl="VC for replaceFirstWrite" proved="true">
+ <proof prover="1"><result status="valid" time="0.07" steps="22593"/></proof>
+ </goal>
+ <goal name="Access.replaceLastWrite&#39;vc" expl="VC for replaceLastWrite" proved="true">
+ <proof prover="1"><result status="valid" time="0.07" steps="22593"/></proof>
+ </goal>
+ <goal name="Access.getFirst&#39;vc" expl="VC for getFirst" proved="true">
+ <proof prover="0" obsolete="true"><result status="timeout" time="1.00" steps="1794865"/></proof>
+ <proof prover="1" obsolete="true"><result status="unknown" time="0.16" steps="29861"/></proof>
+ <transf name="split_vc" proved="true" >
+  <goal name="getFirst&#39;vc.0" expl="postcondition" proved="true">
+  <proof prover="0" obsolete="true"><result status="timeout" time="1.00" steps="1779767"/></proof>
+  <proof prover="1" obsolete="true"><result status="unknown" time="0.19" steps="29485"/></proof>
+  <transf name="split_vc" proved="true" >
+   <goal name="getFirst&#39;vc.0.0" expl="postcondition" proved="true">
+   <proof prover="1"><result status="valid" time="0.08" steps="22594"/></proof>
+   </goal>
+   <goal name="getFirst&#39;vc.0.1" expl="postcondition" proved="true">
+   <proof prover="0" timelimit="30" memlimit="4000" obsolete="true"><result status="timeout" time="30.00" steps="12744053"/></proof>
+   <proof prover="1"><result status="valid" time="0.12" steps="23541"/></proof>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="getFirst&#39;vc.1" expl="postcondition" proved="true">
+  <proof prover="1"><result status="valid" time="0.11" steps="23638"/></proof>
+  </goal>
+ </transf>
+ </goal>
+ <goal name="Access.getLast&#39;vc" expl="VC for getLast" proved="true">
+ <proof prover="1"><result status="valid" time="0.13" steps="23896"/></proof>
+ </goal>
+</theory>
+</file>
+</why3session>

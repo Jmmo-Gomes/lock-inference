@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
+"http://why3.lri.fr/why3session.dtd">
+<why3session shape_version="6">
+<prover id="0" name="Z3" version="4.8.6" timelimit="1" steplimit="0" memlimit="1000"/>
+<prover id="1" name="CVC4" version="1.7" timelimit="1" steplimit="0" memlimit="1000"/>
+<prover id="2" name="Alt-Ergo" version="2.4.2" timelimit="1" steplimit="0" memlimit="1000"/>
+<file format="ocaml">
+<path name=".."/><path name="rOperationsMapGeneration.ml"/>
+<theory name="ROperationsMapGeneration">
+ <goal name="insertR&#39;vc" expl="VC for insertR" proved="true">
+ <proof prover="2"><result status="valid" time="0.03" steps="8"/></proof>
+ </goal>
+ <goal name="createNewRGroup&#39;vc" expl="VC for createNewRGroup" proved="true">
+ <proof prover="2"><result status="valid" time="0.05" steps="35"/></proof>
+ </goal>
+ <goal name="insert&#39;vc" expl="VC for insert" proved="true">
+ <proof prover="1"><result status="valid" time="0.19" steps="49640"/></proof>
+ <proof prover="2"><result status="timeout" time="1.00"/></proof>
+ </goal>
+ <goal name="insertRO&#39;vc" expl="VC for insertRO" proved="true">
+ <proof prover="2"><result status="valid" time="0.02" steps="8"/></proof>
+ </goal>
+ <goal name="noReadLocks&#39;vc" expl="VC for noReadLocks" proved="true">
+ <proof prover="2"><result status="valid" time="0.01" steps="16"/></proof>
+ </goal>
+ <goal name="firstReadORlastWrite&#39;vc" expl="VC for firstReadORlastWrite" proved="true">
+ <proof prover="2"><result status="valid" time="0.03" steps="14"/></proof>
+ </goal>
+ <goal name="labelsVerification&#39;vc" expl="VC for labelsVerification">
+ <proof prover="0"><result status="timeout" time="1.00" steps="1562305"/></proof>
+ <proof prover="1"><result status="timeout" time="1.00" steps="132586"/></proof>
+ <proof prover="2"><result status="timeout" time="1.00"/></proof>
+ <transf name="split_vc" >
+  <goal name="labelsVerification&#39;vc.0" expl="postcondition">
+  <proof prover="2"><undone/></proof>
+  </goal>
+  <goal name="labelsVerification&#39;vc.1" expl="postcondition">
+  <proof prover="2"><undone/></proof>
+  </goal>
+ </transf>
+ </goal>
+ <goal name="firstWriteBefore&#39;vc" expl="VC for firstWriteBefore">
+ <proof prover="0"><undone/></proof>
+ <proof prover="1"><result status="timeout" time="1.00" steps="134274"/></proof>
+ <proof prover="2"><result status="timeout" time="1.00"/></proof>
+ </goal>
+ <goal name="firstReadBefore&#39;vc" expl="VC for firstReadBefore">
+ <proof prover="0"><undone/></proof>
+ <proof prover="1"><result status="timeout" time="1.00" steps="104476"/></proof>
+ <proof prover="2"><result status="timeout" time="1.00"/></proof>
+ </goal>
+ <goal name="computeROperations&#39;vc" expl="VC for computeROperations" proved="true">
+ <proof prover="2"><result status="valid" time="0.02" steps="8"/></proof>
+ </goal>
+ <goal name="getPair&#39;vc" expl="VC for getPair">
+ <proof prover="0"><undone/></proof>
+ <proof prover="1"><result status="timeout" time="1.00" steps="85758"/></proof>
+ <proof prover="2"><result status="timeout" time="1.00"/></proof>
+ </goal>
+ <goal name="computeBindings&#39;vc" expl="VC for computeBindings">
+ <proof prover="0"><undone/></proof>
+ <proof prover="1"><result status="timeout" time="1.00" steps="94048"/></proof>
+ <proof prover="2"><result status="timeout" time="1.00"/></proof>
+ </goal>
+</theory>
+</file>
+</why3session>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
+"http://why3.lri.fr/why3session.dtd">
+<why3session shape_version="6">
+<prover id="0" name="Z3" version="4.8.6" timelimit="1" steplimit="0" memlimit="1000"/>
+<prover id="1" name="CVC4" version="1.7" timelimit="1" steplimit="0" memlimit="1000"/>
+<file format="ocaml">
+<path name=".."/><path name="testRSubsumption.ml"/>
+<theory name="TestRSubsumption">
+ <goal name="sub&#39;vc" expl="VC for sub" proved="true">
+ <proof prover="1"><result status="valid" time="0.28" steps="58853"/></proof>
+ </goal>
+ <goal name="dominatesCheck&#39;vc" expl="VC for dominatesCheck" proved="true">
+ <proof prover="1"><result status="valid" time="0.13" steps="34898"/></proof>
+ </goal>
+ <goal name="dominates&#39;vc" expl="VC for dominates" proved="true">
+ <proof prover="0" obsolete="true"><result status="timeout" time="1.00" steps="1996854"/></proof>
+ <proof prover="1"><result status="valid" time="0.22" steps="46465"/></proof>
+ </goal>
+ <goal name="methodCycle&#39;vc" expl="VC for methodCycle" proved="true">
+ <proof prover="1"><result status="valid" time="0.66" steps="92588"/></proof>
+ </goal>
+ <goal name="resourceMapUpdate&#39;vc" expl="VC for resourceMapUpdate" proved="true">
+ <proof prover="1"><result status="valid" time="0.14" steps="42595"/></proof>
+ </goal>
+ <goal name="logic&#39;vc" expl="VC for logic" proved="true">
+ <proof prover="0" obsolete="true"><result status="timeout" time="1.00" steps="1687879"/></proof>
+ <proof prover="1"><result status="valid" time="0.32" steps="58699"/></proof>
+ </goal>
+ <goal name="findSndResource&#39;vc" expl="VC for findSndResource" proved="true">
+ <proof prover="1"><result status="valid" time="0.65" steps="68446"/></proof>
+ </goal>
+ <goal name="sndResource&#39;vc" expl="VC for sndResource" proved="true">
+ <proof prover="1"><result status="valid" time="0.10" steps="53980"/></proof>
+ </goal>
+ <goal name="fstResource&#39;vc" expl="VC for fstResource">
+ <proof prover="0" obsolete="true"><result status="timeout" time="1.00" steps="1447288"/></proof>
+ <proof prover="1" obsolete="true"><result status="timeout" time="1.00" steps="123421"/></proof>
+ </goal>
+ <goal name="subsumption&#39;vc" expl="VC for subsumption">
+ </goal>
+</theory>
+</file>
+</why3session>

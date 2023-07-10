@@ -1,0 +1,56 @@
+resources (key word)
+0 (resourceId)
+0 (type)
+1 (visibility= 0:public 1:private)
+0 (nature= 0:atomic 1:non-atomic)
+0 (resourceType = 0:field 1:cast 2:methodcall 3:object)
+resources
+1
+0
+1
+1
+1
+resources
+2
+0
+1
+0
+1
+2
+resources
+3
+0
+1
+0
+0
+
+class (key word)
+ClassName1 (name of the class)
+method (key word)
+get1 (name of the method)
+resource(key word)
+1 (resourceID)
+0,2,8,3,7 (labels)
+resource(key word)
+0 (resourceID)
+0,3,4,5,6(labels)
+
+
+class (key word)
+ClassName2 (name of the class)
+method (key word)
+get2 (name of the method)
+resource (key word)
+2 (resourceID)
+0,-1,4,-1,1 (labels)
+method (key word)
+get3 (name of the method)
+resource (key word)
+2 (resourceID)
+0,-1,-1, 2,5 (labels)
+resource (key word)
+3 (resourceID)
+0,1,17,4,5 (labels)
+
+
+

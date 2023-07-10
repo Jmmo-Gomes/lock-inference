@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
+"http://why3.lri.fr/why3session.dtd">
+<why3session shape_version="6">
+<prover id="0" name="CVC4" version="1.7" timelimit="1" steplimit="0" memlimit="1000"/>
+<file format="ocaml">
+<path name=".."/><path name="testLockGeneration.ml"/>
+<theory name="TestLockGeneration">
+ <goal name="checkRopList&#39;vc" expl="VC for checkRopList" proved="true">
+ <proof prover="0"><result status="valid" time="0.30" steps="49249"/></proof>
+ </goal>
+ <goal name="checkGroupsLastRelease&#39;vc" expl="VC for checkGroupsLastRelease" proved="true">
+ <proof prover="0"><result status="valid" time="0.32" steps="50490"/></proof>
+ </goal>
+ <goal name="trasverseRoMap&#39;vc" expl="VC for trasverseRoMap">
+ </goal>
+ <goal name="computeReleaseBindings&#39;vc" expl="VC for computeReleaseBindings">
+ </goal>
+ <goal name="checkGroupsFirstOperation&#39;vc" expl="VC for checkGroupsFirstOperation">
+ </goal>
+ <goal name="checkFirstWrite&#39;vc" expl="VC for checkFirstWrite">
+ </goal>
+ <goal name="checkFirstRead&#39;vc" expl="VC for checkFirstRead">
+ </goal>
+ <goal name="readCheck&#39;vc" expl="VC for readCheck">
+ </goal>
+ <goal name="writeCheck&#39;vc" expl="VC for writeCheck">
+ </goal>
+ <goal name="differentGuard&#39;vc" expl="VC for differentGuard">
+ </goal>
+ <goal name="trasverseResources&#39;vc" expl="VC for trasverseResources">
+ </goal>
+ <goal name="lockGeneration&#39;vc" expl="VC for lockGeneration">
+ </goal>
+</theory>
+</file>
+</why3session>
