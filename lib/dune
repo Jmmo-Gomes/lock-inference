@@ -1,3 +1,16 @@
 (library
  (libraries str)
+ (modules
+  mapping
+  rSubsumption
+  method
+  resource
+  guards
+  parameterGrouping
+  resourceGroup
+  pipeline
+  twoPL
+  roperation
+  lockGeneration
+  rOperationsMapGeneration)
  (name lib))
