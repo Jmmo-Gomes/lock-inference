@@ -92,33 +92,38 @@
       ensures ra.lastWrite = -1*)
 
 
-      let [@logic ] resourceAccessCons (l: int list) =
-        let lfirst, lfirstRead, llastRead, lfirstWrite, llastWrite = 
-          match l with
-          | [lfirst; lfirstRead; llastRead; lfirstWrite; llastWrite] -> lfirst, lfirstRead, llastRead, lfirstWrite, llastWrite
-          | _ -> assert false in
-          { first = lfirst; firstRead = lfirstRead; lastRead = llastRead; firstWrite = lfirstWrite; lastWrite = llastWrite} 
-        
-        (*@ ra = resourceAccessCons l
-           requires List.length l = 5
-           ensures
-            match l with
-              | (lfirst :: (lfirstRead :: (llastRead :: (lfirstWrite :: (llastWrite :: []))))) -> 
-              ra.first = lfirst && ra.firstRead = lfirstRead && ra.lastRead = llastRead && ra.firstWrite = lfirstWrite && ra.lastWrite = llastWrite
-              |_ -> false
-            *)
-          
-
-  let hasReadAccess rA= 
+  let [@logic ] hasReadAccess rA= 
    rA.firstRead <> -1
    (*@ b = hasReadAccess rA
       ensures b -> rA.firstRead <> -1
     *)
   
-  let hasWriteAccess rA= 
+  let [@logic ] hasWriteAccess rA= 
     rA.firstWrite <> -1
     (*@ b = hasWriteAccess rA
       ensures b -> rA.firstWrite <> -1
+    *)
+
+  let [@logic ] resourceAccessCons (l: int list) =
+    let lfirst, lfirstRead, llastRead, lfirstWrite, llastWrite = 
+      match l with
+      | [lfirst; lfirstRead; llastRead; lfirstWrite; llastWrite] -> lfirst, lfirstRead, llastRead, lfirstWrite, llastWrite
+      | _ -> assert false in
+      { first = lfirst; firstRead = lfirstRead; lastRead = llastRead; firstWrite = lfirstWrite; lastWrite = llastWrite} 
+    
+    (*@ ra = resourceAccessCons l
+        requires List.length l = 5
+        ensures
+        match l with
+          | (lfirst :: (lfirstRead :: (llastRead :: (lfirstWrite :: (llastWrite :: []))))) -> 
+          ra.first = lfirst 
+          && ra.firstRead = lfirstRead 
+          && ra.lastRead = llastRead 
+          && ra.firstWrite = lfirstWrite 
+          && ra.lastWrite = llastWrite
+          && lfirstRead = -1 -> not (hasReadAccess ra)
+          && lfirstWrite = -1 -> not (hasWriteAccess ra)
+          |_ -> false
     *)
   
   let replaceFirstWrite label rA= 
