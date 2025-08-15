@@ -1,6 +1,7 @@
 open Resource
 open ResourceGroup
 open Mapping
+open Roperation
 
 (* Função semelhante à de baixo mas recebe um resourceGroup*)
 let insertR label (rGroup:ResourceGroup.resourceGroup) rOperationsMap=
@@ -69,8 +70,6 @@ let insert (label:int) (rop:Roperation.rOp) rOperationsMap counter=
         newRGroup = { id = counter; ropList = rGroup.ropList} &&
         List.mem newRGroup newList
       *)
-
-open Roperation
 
   let [@logic] insertRO opCode label res rOperationsMap counter=
     let (ro:Roperation.rOp)= {op = opCode; r = res} in
@@ -244,8 +243,6 @@ let computeROperations res (access: Access.resourceAccess) rOperationsMap counte
         end
       else ();
     !rOperationsMap, !counter
-
-open Mapping
 
 (* Função recursiva: Recebe um mapa e as suas chaves como argumento e vai extrair o valor de cada chamando depois
    a função computeROperations para este par de chave,valor*)

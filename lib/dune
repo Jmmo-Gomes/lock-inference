@@ -12,5 +12,6 @@
   twoPL
   roperation
   lockGeneration
-  rOperationsMapGeneration)
+  rOperationsMapGeneration
+  lockInference)
  (name lib))
