@@ -386,7 +386,7 @@ let [@logic] rec getResult ropList (rop:rOp) =
 
 
   let [@logic] diff rop1 rop2= 
-  (rop1.Roperation.r <> rop2.Roperation.r || rop1.Roperation.op <> rop2.Roperation.op)
+  (rop1.r <> rop2.r || rop1.op <> rop2.op)
 
   let [@logic] remove (rOp: rOp) resGroup = 
     let newRopList = List.filter (diff rOp) resGroup.ropList in
