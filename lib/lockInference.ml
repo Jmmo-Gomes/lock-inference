@@ -959,7 +959,7 @@ let rec getPair accessMap bindings rOperationsMap counter=
 (* Por fim ela chama a função getPair para cada chave*)
 (*Pre : receber o raMap bem construido
   Pos : devolver o mapa dos resourceOperations bem construido relativos a este raMap*)
-let computeBindings (raMap:Resource.Access.resourceAccess IntMap.t)=
+let computeBindings (raMap:Access.resourceAccess IntMap.t)=
   (*print_string "rOperations Map Generation compute Bindings \n";*)
   let bindingsAccess = IntMap.bindings raMap in
   let bindingsAccess = List.map (fun (k, _) -> k) bindingsAccess in
