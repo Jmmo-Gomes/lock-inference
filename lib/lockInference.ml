@@ -737,7 +737,7 @@ let createNewRGroup label rOperationsMap counter rop list=
 
 (* requires label => -1
    ensures result.view label = list*)
-let insert (label:int) (rop:Roperation.rOp) rOperationsMap counter=
+let insert (label:int) (rop:rOp) rOperationsMap counter=
   try let list = IntMap.find label rOperationsMap in
     createNewRGroup label rOperationsMap counter rop list
   with Not_found ->(
@@ -766,7 +766,7 @@ let insert (label:int) (rop:Roperation.rOp) rOperationsMap counter=
       *)
 
   let [@logic] insertRO opCode label res rOperationsMap counter=
-    let (ro:Roperation.rOp)= {op = opCode; r = res} in
+    let (ro:rOp)= {op = opCode; r = res} in
     insert label ro rOperationsMap counter
     (*@newROperationsMap = insertRO opCode label res rOperationsMap counter
        ensures let rop = {op = opCode; r = res} in
