@@ -698,7 +698,7 @@ newResourceMap
     *)
 
 (* Função semelhante à de baixo mas recebe um resourceGroup*)
-let insertR label (rGroup:ResourceGroup.resourceGroup) rOperationsMap=
+let insertR label (rGroup:resourceGroup) rOperationsMap=
   let newROperationsMap = ref rOperationsMap in
   if IntMap.mem label rOperationsMap
     then () else
@@ -719,9 +719,9 @@ let insertR label (rGroup:ResourceGroup.resourceGroup) rOperationsMap=
 (* Função que recebe uma label e uma resourceOperation e cria um resource group adicionando-o à lista de resource groups*)
 
 let createNewRGroup label rOperationsMap counter rop list= 
-  let rGroup = ResourceGroup.rGroupVar() in
+  let rGroup = rGroupVar() in
   let newRGroup = { id = counter; ropList = rGroup.ropList} in
-  let newRGroup = ResourceGroup.add rop newRGroup in
+  let newRGroup = add rop newRGroup in
   let newlist = list @ [newRGroup] in
   let newROperationsMap = IntMap.add label newlist rOperationsMap in
   newROperationsMap
@@ -730,7 +730,7 @@ let createNewRGroup label rOperationsMap counter rop list=
     (newList = newROperationsMap.IntMap.view label && IntMap.mem label newROperationsMap) ->
     List.length list < List.length newList && 
     exists newRGroup.
-    let rGroup = ResourceGroup.rGroupVar() in
+    let rGroup = rGroupVar() in
     newRGroup = { id = counter; ropList = rGroup.ropList} &&
     List.mem newRGroup newList
 *)
@@ -752,7 +752,7 @@ let insert (label:int) (rop:Roperation.rOp) rOperationsMap counter=
       (newList = newROperationsMap.IntMap.view label && IntMap.mem label newROperationsMap) ->
       List.length list < List.length newList && 
       exists newRGroup.
-      let rGroup = ResourceGroup.rGroupVar() in
+      let rGroup = rGroupVar() in
       newRGroup = { id = counter; ropList = rGroup.ropList} &&
       List.mem newRGroup newList
       else 
@@ -760,7 +760,7 @@ let insert (label:int) (rop:Roperation.rOp) rOperationsMap counter=
       (newList = newROperationsMap.IntMap.view label && IntMap.mem label newROperationsMap) ->
        List.length newList > 0 && 
         exists newRGroup.
-        let rGroup = ResourceGroup.rGroupVar() in
+        let rGroup = rGroupVar() in
         newRGroup = { id = counter; ropList = rGroup.ropList} &&
         List.mem newRGroup newList
       *)
@@ -776,7 +776,7 @@ let insert (label:int) (rop:Roperation.rOp) rOperationsMap counter=
       (newList = newROperationsMap.IntMap.view label && IntMap.mem label newROperationsMap) ->
       List.length list < List.length newList && 
       exists newRGroup.
-      let rGroup = ResourceGroup.rGroupVar() in
+      let rGroup = rGroupVar() in
       newRGroup = { id = counter; ropList = rGroup.ropList} &&
       List.mem newRGroup newList
       else 
@@ -784,7 +784,7 @@ let insert (label:int) (rop:Roperation.rOp) rOperationsMap counter=
       (newList = newROperationsMap.IntMap.view label && IntMap.mem label newROperationsMap) ->
        List.length newList > 0 && 
         exists newRGroup.
-        let rGroup = ResourceGroup.rGroupVar() in
+        let rGroup = rGroupVar() in
         newRGroup = { id = counter; ropList = rGroup.ropList} &&
         List.mem newRGroup newList
     *)
