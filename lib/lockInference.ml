@@ -1,14 +1,4 @@
-
-type 'a met = {mutable name: string;
-}
-
-let methodVar = {name = "" }
-
-let methodConstruct (n : string) (m : met) : met =
-  { m with name = n }
-
-
-  module ResourceClass =
+ module ResourceClass =
   struct
   (*
   type whatIs =

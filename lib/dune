@@ -3,7 +3,6 @@
  (modules
   mapping
   rSubsumption
-  method
   resource
   guards
   parameterGrouping
