@@ -969,13 +969,13 @@ let computeBindings (raMap:Access.resourceAccess IntMap.t)=
   newROperationsMap
 (*@
   ensures forall l:int.
-    IntMap.mem l result ->
+    IntMap.mem l result ==>
     exists k:int.
       IntMap.mem k raMap /\
-      let acc = IntMap.find k raMap in
+      let acc = raMap.IntMap.view k in
       l = acc.first \/
       l = acc.firstRead \/
       l = acc.lastRead \/
       l = acc.firstWrite \/
-      l = acc.lastWrite
-*)
+      l = acc.lastWrite;
+@*)
