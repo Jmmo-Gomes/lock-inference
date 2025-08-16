@@ -968,22 +968,26 @@ let computeBindings (raMap:Access.resourceAccess IntMap.t)=
   let newROperationsMap = getPair raMap bindingsAccess rOperationsMap counter in
   newROperationsMap
 (*@
-  ensures (IntMap.bindings raMap == []) ==> (IntMap.bindings result == [])
+  // If raMap is empty, the result is empty
+  ensures (forall k:int. not (IntMap.mem k raMap)) ->
+          (forall l:int. not (IntMap.mem l result))
 
+  // For every resource with any access, we add an entry at its 'first' label
   ensures forall k:int.
-    IntMap.mem k raMap ==>
-    let acc = IntMap.find k raMap in
-    (acc.firstRead <> -1 \/ acc.firstWrite <> -1) ==>
-    IntMap.mem acc.first result
+            IntMap.mem k raMap ->
+            let acc = IntMap.get raMap k in
+            (acc.firstRead <> -1 \/ acc.firstWrite <> -1) ->
+            IntMap.mem acc.first result
 
+  // Every label in the result comes from some field of some access in raMap
   ensures forall l:int.
-    IntMap.mem l result ==>
-    exists k:int.
-      IntMap.mem k raMap /\
-      let acc = IntMap.find k raMap in
-      l = acc.first \/
-      l = acc.firstRead \/
-      l = acc.lastRead \/
-      l = acc.firstWrite \/
-      l = acc.lastWrite
+            IntMap.mem l result ->
+            exists k:int.
+              IntMap.mem k raMap /\
+              let acc = IntMap.get raMap k in
+              (l = acc.first \/
+               l = acc.firstRead \/
+               l = acc.lastRead \/
+               l = acc.firstWrite \/
+               l = acc.lastWrite)
 *)
