@@ -848,16 +848,43 @@ let insert (label:int) (rop:rOp) rOperationsMap counter=
           let newCounter = newCounter +1 in
           newROperationsMap, newCounter
         else rOperationsMap, counter 
-      (*@newROperationsMap, newCounter = labelsVerification firstRead lastRead lastWrite res rOperationsMap counter
-          ensures if firstRead = -1 || lastRead < lastWrite  then
-              newROperationsMap = insertRO 7 lastWrite res rOperationsMap counter &&
-              newCounter = counter +1         
-           else if lastWrite < lastRead then
-              let newROperationsMap, newCounter = firstReadORlastWrite firstRead lastWrite res rOperationsMap counter in
-              newROperationsMap =insertRO 7 lastRead res newROperationsMap newCounter &&
-              newCounter = newCounter +1 
-          else newROperationsMap = rOperationsMap && newCounter = counter 
-      *)
+      (*@
+  requires firstRead >= -1
+  requires lastRead >= -1
+  requires lastWrite >= -1
+  (* resource identifiers are always valid *)
+  requires res >= 0
+
+  (* Counter is non-negative and monotonically increasing *)
+  requires counter >= 0
+
+  (* Branch 1: if firstRead = -1 or lastRead < lastWrite,
+     then exactly one insertRO is applied with argument lastWrite,
+     and counter is incremented by 1 *)
+  ensures (firstRead = -1 \/ lastRead < lastWrite) ->
+          (exists roMap:intmap. result = (roMap, counter + 1) /\
+           roMap = insertRO 7 lastWrite res rOperationsMap counter)
+
+  (* Branch 2: if lastWrite < lastRead,
+     then firstReadORlastWrite is applied, then one insertRO with lastRead,
+     and counter is incremented by 1 after the second insertRO *)
+  ensures (lastWrite < lastRead /\ firstRead <> -1) ->
+          (exists roMap0:intmap, roMap1:intmap, c0:int.
+             (roMap0, c0) = firstReadORlastWrite firstRead lastWrite res rOperationsMap counter /\
+             roMap1 = insertRO 7 lastRead res roMap0 c0 /\
+             result = (roMap1, c0 + 1))
+
+  (* Branch 3: otherwise (lastWrite = lastRead and firstRead <> -1),
+     no modification is done: result = (rOperationsMap, counter) *)
+  ensures (lastWrite = lastRead /\ firstRead <> -1) ->
+          result = (rOperationsMap, counter)
+
+  (* General post-condition: counter never decreases *)
+  ensures let (_, cnew) = result in cnew >= counter
+
+  (* General post-condition: rOperationsMap is unchanged if and only if
+     lastWrite = lastRead and firstRead <> -1 *)
+*)
       
 
     let firstWriteBefore firstRead firstWrite lastRead lastWrite res rOperationsMap counter = 
