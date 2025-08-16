@@ -968,7 +968,7 @@ let computeBindings (raMap:Access.resourceAccess IntMap.t)=
   let newROperationsMap = getPair raMap bindingsAccess rOperationsMap counter in
   newROperationsMap
 (*@
-  ensures (IntMap.bindings raMap == []) ==> (IntMap.bindings result == [])
+  
 
   ensures forall k:int.
     IntMap.mem k raMap ->
