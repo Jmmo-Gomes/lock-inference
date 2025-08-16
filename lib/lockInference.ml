@@ -946,6 +946,15 @@ let computeROperations res (access: Access.resourceAccess) rOperationsMap counte
         end
       else ();
     !rOperationsMap, !counter
+(*@ newROperationsMap, newCounter = computeROperations res access rOperationsMap counter
+    requires res >= 0
+    requires access.firstRead >= -1 && access.lastRead >= -1 &&
+             access.firstWrite >= -1 && access.lastWrite >= -1
+    ensures newCounter >= counter
+    ensures (access.firstRead = -1 && access.firstWrite = -1) ->
+              newROperationsMap = rOperationsMap
+    ensures (access.firstRead <> -1 || access.firstWrite <> -1) ->
+              IntMap.mem access.first newROperationsMap *)
 
 (* Função recursiva: Recebe um mapa e as suas chaves como argumento e vai extrair o valor de cada chamando depois
    a função computeROperations para este par de chave,valor*)
@@ -961,8 +970,10 @@ let rec getPair accessMap bindings rOperationsMap counter=
     with Not_found -> (
       getPair accessMap xs rOperationsMap counter
     ))
-    (* @result = getPair accessMap bindings rOperationsMap*)
-
+(*@ result = getPair accessMap bindings rOperationsMap counter
+    variant bindings
+    ensures forall k. List.mem k bindings -> IntMap.mem k result *)
+    
 (* Função recursiva: Percorre as chaves do mapa recebidas como argumento e extrai o seu value*)
 (* O seu value é um mapa que mapeia resources (ints) -> resourceAccess*)
 (* Por fim ela chama a função getPair para cada chave*)
