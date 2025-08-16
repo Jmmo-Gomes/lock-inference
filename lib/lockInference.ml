@@ -947,7 +947,7 @@ let computeROperations res (access: Access.resourceAccess) rOperationsMap counte
       else ();
     !rOperationsMap, !counter
 (*@
-  val newMap, newCounter = computeROperations res access rOperationsMap counter
+  returns (newMap, newCounter)
 
   (* Counter never decreases *)
   ensures newCounter >= counter
