@@ -357,13 +357,20 @@ type resourceGroup = {
 let roEqual ro1 =
   let ro2 = {op = 0; r = -1} in 
   ro1.op = ro2.op && ro1.r = ro2.r
-
+(*@ b = roEqual ro1
+    ensures b <-> (ro1.op = 0 && ro1.r = -1) *)
 
 let [@logic] rGroupVar () = { id = -1; ropList = []}
+(*@ rg = rGroupVar ()
+    ensures rg.id = -1
+    ensures rg.ropList = [] *)
 
 let setId id resGroup =
   let newResGroup = { id = id ; ropList = resGroup.ropList} in  
   newResGroup
+  (*@ rg = setId id resGroup
+    ensures rg.id = id
+    ensures rg.ropList = resGroup.ropList *)
 
 let add (rOp: rOp) resGroup = 
   let newResGroup = { id = resGroup.id ; ropList = resGroup.ropList @ [rOp]} in  newResGroup
@@ -387,6 +394,8 @@ let [@logic] rec getResult ropList (rop:rOp) =
 
   let [@logic] diff rop1 rop2= 
   (rop1.r <> rop2.r || rop1.op <> rop2.op)
+  (*@ b = diff rop1 rop2
+    ensures b <-> not (rop1.r = rop2.r && rop1.op = rop2.op) *)
 
   let [@logic] remove (rOp: rOp) resGroup = 
     let newRopList = List.filter (diff rOp) resGroup.ropList in
