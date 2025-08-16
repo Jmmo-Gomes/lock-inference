@@ -961,7 +961,27 @@ let rec getPair accessMap bindings rOperationsMap counter=
     with Not_found -> (
       getPair accessMap xs rOperationsMap counter
     ))
+(*@
+  requires True
+  variant bindings
 
+  (* Base case: empty list returns the current accumulator *)
+  ensures bindings = [] -> result = rOperationsMap
+
+  (* Step case: head :: tail. Two flows: key present or absent. *)
+  ensures
+    match bindings with
+    | [] -> True
+    | x :: xs ->
+        (IntMap.mem x accessMap ->
+           exists a m' c'.
+             a = accessMap.IntMap.view x /\
+             (m', c') = computeROperations x a rOperationsMap counter /\
+             result = getPair accessMap xs m' c')
+        /\
+        (not (IntMap.mem x accessMap) ->
+           result = getPair accessMap xs rOperationsMap counter)
+*)
 
 (* Função recursiva: Percorre as chaves do mapa recebidas como argumento e extrai o seu value*)
 (* O seu value é um mapa que mapeia resources (ints) -> resourceAccess*)
