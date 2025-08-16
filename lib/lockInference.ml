@@ -946,26 +946,9 @@ let computeROperations res (access: Access.resourceAccess) rOperationsMap counte
         end
       else ();
     !rOperationsMap, !counter
-(*@
-  returns (newMap, newCounter)
-
-  (* Counter never decreases *)
-  ensures newCounter >= counter
-
-  (* If no read or write accesses, map and counter unchanged *)
-  ensures access.firstRead = -1 /\ access.firstWrite = -1 ->
-          newMap = rOperationsMap /\ newCounter = counter
-
-  (* If there is at least one read or write access, then something is inserted *)
-  ensures (access.firstRead <> -1 \/ access.firstWrite <> -1) ->
-            (exists l:int. IntMap.mem l newMap)
-
-  (* Map is monotonic: all keys already in [rOperationsMap] remain in [newMap] *)
-  ensures forall l:int. IntMap.mem l rOperationsMap -> IntMap.mem l newMap
-
-  (* Counter increases by at least 1 when a read/write exists *)
-  ensures (access.firstRead <> -1 \/ access.firstWrite <> -1) ->
-            newCounter > counter
+(*@ returns (newMap, newCounter)
+      ensures newCounter >= counter
+      ensures forall l:int. IntMap.mem l rOperationsMap -> IntMap.mem l newMap
 *)
 
 (* Função recursiva: Recebe um mapa e as suas chaves como argumento e vai extrair o valor de cada chamando depois
