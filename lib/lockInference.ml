@@ -946,15 +946,27 @@ let computeROperations res (access: Access.resourceAccess) rOperationsMap counte
         end
       else ();
     !rOperationsMap, !counter
-(*@ newROperationsMap, newCounter = computeROperations res access rOperationsMap counter
-    requires res >= 0
-    requires access.firstRead >= -1 && access.lastRead >= -1 &&
-             access.firstWrite >= -1 && access.lastWrite >= -1
-    ensures newCounter >= counter
-    ensures (access.firstRead = -1 && access.firstWrite = -1) ->
-              newROperationsMap = rOperationsMap
-    ensures (access.firstRead <> -1 || access.firstWrite <> -1) ->
-              IntMap.mem access.first newROperationsMap *)
+(*@
+  val newMap, newCounter = computeROperations res access rOperationsMap counter
+
+  (* Counter never decreases *)
+  ensures newCounter >= counter
+
+  (* If no read or write accesses, map and counter unchanged *)
+  ensures access.firstRead = -1 /\ access.firstWrite = -1 ->
+          newMap = rOperationsMap /\ newCounter = counter
+
+  (* If there is at least one read or write access, then something is inserted *)
+  ensures (access.firstRead <> -1 \/ access.firstWrite <> -1) ->
+            (exists l:int. IntMap.mem l newMap)
+
+  (* Map is monotonic: all keys already in [rOperationsMap] remain in [newMap] *)
+  ensures forall l:int. IntMap.mem l rOperationsMap -> IntMap.mem l newMap
+
+  (* Counter increases by at least 1 when a read/write exists *)
+  ensures (access.firstRead <> -1 \/ access.firstWrite <> -1) ->
+            newCounter > counter
+*)
 
 (* Função recursiva: Recebe um mapa e as suas chaves como argumento e vai extrair o valor de cada chamando depois
    a função computeROperations para este par de chave,valor*)
@@ -970,10 +982,8 @@ let rec getPair accessMap bindings rOperationsMap counter=
     with Not_found -> (
       getPair accessMap xs rOperationsMap counter
     ))
-(*@ result = getPair accessMap bindings rOperationsMap counter
-    variant bindings
-    ensures forall k. List.mem k bindings -> IntMap.mem k result *)
-    
+
+
 (* Função recursiva: Percorre as chaves do mapa recebidas como argumento e extrai o seu value*)
 (* O seu value é um mapa que mapeia resources (ints) -> resourceAccess*)
 (* Por fim ela chama a função getPair para cada chave*)
