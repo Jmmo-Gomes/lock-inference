@@ -968,14 +968,6 @@ let computeBindings (raMap:Access.resourceAccess IntMap.t)=
   let newROperationsMap = getPair raMap bindingsAccess rOperationsMap counter in
   newROperationsMap
 (*@
-  
-
-  ensures forall k:int.
-    IntMap.mem k raMap ->
-    let acc = IntMap.find k raMap in
-    (acc.firstRead <> -1 \/ acc.firstWrite <> -1) ->
-    IntMap.mem acc.first result
-
   ensures forall l:int.
     IntMap.mem l result ->
     exists k:int.
@@ -986,4 +978,4 @@ let computeBindings (raMap:Access.resourceAccess IntMap.t)=
       l = acc.lastRead \/
       l = acc.firstWrite \/
       l = acc.lastWrite
-@*)
+*)
