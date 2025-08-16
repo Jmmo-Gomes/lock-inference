@@ -946,10 +946,6 @@ let computeROperations res (access: Access.resourceAccess) rOperationsMap counte
         end
       else ();
     !rOperationsMap, !counter
-(*@ returns (newMap, newCounter)
-      ensures newCounter >= counter
-      ensures forall l:int. IntMap.mem l rOperationsMap -> IntMap.mem l newMap
-*)
 
 (* Função recursiva: Recebe um mapa e as suas chaves como argumento e vai extrair o valor de cada chamando depois
    a função computeROperations para este par de chave,valor*)
