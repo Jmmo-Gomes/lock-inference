@@ -1001,6 +1001,10 @@ let computeBindings (raMap:Access.resourceAccess IntMap.t)=
   let newROperationsMap = getPair raMap bindingsAccess rOperationsMap counter in
   newROperationsMap
 (*@
+  (************************************************************
+   * Basic mapping shape properties (original)
+   ************************************************************)
+
   (* If raMap is empty, then result is empty *)
   ensures (forall k:int. not (IntMap.mem k raMap)) ->
           (forall l:int. not (IntMap.mem l result))
@@ -1015,4 +1019,95 @@ let computeBindings (raMap:Access.resourceAccess IntMap.t)=
   ensures forall k:int.
             IntMap.mem k raMap ->
             exists l:int. IntMap.mem l result
+
+  (************************************************************
+   * Abbreviations used in postconditions
+   ************************************************************)
+  let OpAt (m:resourceGroup list IntMap.t) (l:int) (op:int) (r:int) : bool =
+    IntMap.mem l m /\
+    (exists grps:resourceGroup list. grps = m.IntMap.view l /\
+     exists g:resourceGroup. List.mem g grps /\
+       getResult g.ropList {op = op; r = r})
+
+  let HasReadOnly (ra:Access.resourceAccess) : bool =
+    ra.Access.firstRead <> -1 /\ ra.Access.firstWrite = -1
+
+  let HasWrite (ra:Access.resourceAccess) : bool =
+    ra.Access.firstWrite <> -1
+
+  (************************************************************
+   * Availability marker whenever there is any access
+   ************************************************************)
+  ensures forall r:int.
+            IntMap.mem r raMap ->
+            let ra = raMap.IntMap.view r in
+            (ra.Access.firstRead <> -1 \/ ra.Access.firstWrite <> -1) ->
+            OpAt result ra.Access.first 1 r
+
+  (************************************************************
+   * READ-ONLY: shared acquire and release
+   *   - READ (2) at firstRead
+   *   - RELEASE (7) at lastRead
+   ************************************************************)
+  ensures forall r:int.
+            IntMap.mem r raMap ->
+            let ra = raMap.IntMap.view r in
+            HasReadOnly ra ->
+              OpAt result ra.Access.firstRead 2 r /\
+              OpAt result ra.Access.lastRead 7 r
+
+  (************************************************************
+   * WRITE present: proper exclusive coverage
+   *
+   * Case A: no read, or write starts before first read
+   *   - WRITE (4) at firstWrite
+   ************************************************************)
+  ensures forall r:int.
+            IntMap.mem r raMap ->
+            let ra = raMap.IntMap.view r in
+            HasWrite ra /\
+            (ra.Access.firstRead = -1 \/
+             ra.Access.firstWrite < ra.Access.firstRead) ->
+              OpAt result ra.Access.firstWrite 4 r
+
+  (************************************************************
+   * Case B: read starts first, then a write happens
+   *   - SHARED_BEFORE_EXCLUSIVE (3) at firstRead
+   *   - UPGRADE (5) at firstWrite
+   ************************************************************)
+  ensures forall r:int.
+            IntMap.mem r raMap ->
+            let ra = raMap.IntMap.view r in
+            HasWrite ra /\ ra.Access.firstRead <> -1 /\
+            ra.Access.firstRead < ra.Access.firstWrite ->
+              OpAt result ra.Access.firstRead 3 r /\
+              OpAt result ra.Access.firstWrite 5 r
+
+  (************************************************************
+   * Closing after writes:
+   *
+   * If no read tail after the last write
+   *   (firstRead = -1 OR lastRead < lastWrite):
+   *     - RELEASE (7) at lastWrite
+   ************************************************************)
+  ensures forall r:int.
+            IntMap.mem r raMap ->
+            let ra = raMap.IntMap.view r in
+            HasWrite ra /\
+            (ra.Access.firstRead = -1 \/
+             ra.Access.lastRead < ra.Access.lastWrite) ->
+              OpAt result ra.Access.lastWrite 7 r
+
+  (************************************************************
+   * If there is a read tail: lastWrite < lastRead
+   *   - DOWNGRADE (6) at lastWrite
+   *   - RELEASE   (7) at lastRead
+   ************************************************************)
+  ensures forall r:int.
+            IntMap.mem r raMap ->
+            let ra = raMap.IntMap.view r in
+            HasWrite ra /\ ra.Access.firstRead <> -1 /\
+            ra.Access.lastWrite < ra.Access.lastRead ->
+              OpAt result ra.Access.lastWrite 6 r /\
+              OpAt result ra.Access.lastRead 7 r
 *)
