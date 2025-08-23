@@ -992,7 +992,27 @@ let rec getPair accessMap bindings rOperationsMap counter=
 (* Por fim ela chama a função getPair para cada chave*)
 (*Pre : receber o raMap bem construido
   Pos : devolver o mapa dos resourceOperations bem construido relativos a este raMap*)
-let computeBindings (raMap:Access.resourceAccess IntMap.t)=
+
+(*@ predicate OpAt
+      (m: resourceGroup list IntMap.t) (l:int) (op:int) (r:int) =
+      IntMap.mem l m /\
+      (exists grps: resourceGroup list.
+         (* Replace the next line by your IntMap model accessor if needed *)
+         grps = m.IntMap.view l /\
+         (exists g: resourceGroup.
+            List.mem g grps /\
+            getResult g.ropList { op = op; r = r }))
+*)
+
+(*@ predicate HasReadOnly (ra: Access.resourceAccess) =
+      ra.Access.firstRead <> -1 /\ ra.Access.firstWrite = -1
+*)
+
+(*@ predicate HasWrite (ra: Access.resourceAccess) =
+      ra.Access.firstWrite <> -1
+*)
+
+let computeBindings (raMap: Access.resourceAccess IntMap.t) =
   (*print_string "rOperations Map Generation compute Bindings \n";*)
   let bindingsAccess = IntMap.bindings raMap in
   let bindingsAccess = List.map (fun (k, _) -> k) bindingsAccess in
@@ -1001,82 +1021,82 @@ let computeBindings (raMap:Access.resourceAccess IntMap.t)=
   let newROperationsMap = getPair raMap bindingsAccess rOperationsMap counter in
   newROperationsMap
 (*@
-   (* Basic mapping shape properties *)
+  (************************************************************
+   * Basic mapping shape properties
+   ************************************************************)
 
-  (* If raMap is empty, result is also empty *)
-  ensures (IntMap.cardinal raMap = 0) ↔ (IntMap.cardinal result = 0)
+  ensures (forall k:int. not (IntMap.mem k raMap)) ->
+          (forall l:int. not (IntMap.mem l result))
 
-  (* Every key in result originates from rfMap *)
   ensures forall l:int.
-    IntMap.mem l result → exists k:int. IntMap.mem k raMap
+            IntMap.mem l result ->
+            exists k:int. IntMap.mem k raMap
 
-  (* Every key in raMap produces at least one result label *)
   ensures forall k:int.
-    IntMap.mem k raMap → exists l:int. IntMap.mem l result
+            IntMap.mem k raMap ->
+            exists l:int. IntMap.mem l result
 
-  (* Abbreviations for readability *)
-
-  let OpAt (m : resourceGroup list IntMap.t) (l:int) (op:int) (r:int) : bool =
-    IntMap.mem l m /\
-    match IntMap.find_opt l m with
-    | Some grps ->
-        List.exists (fun g ->
-          List.exists (fun gg ->
-            gg = g && List.exists (fun x -> x.op = op && x.r = r) (getResult g).ropList
-          ) grps
-        ) grps
-    | None -> false
-
-  let HasReadOnly (ra : Access.resourceAccess) : bool =
-    ra.firstRead <> -1 && ra.firstWrite = -1
-
-  let HasWrite (ra : Access.resourceAccess) : bool =
-    ra.firstWrite <> -1
-
-  (* Availability marker when there is any access *)
+  (************************************************************
+   * Availability marker whenever there is any access
+   ************************************************************)
   ensures forall r:int.
-    IntMap.mem r raMap →
-    let ra = IntMap.find r raMap in
-    (ra.firstRead <> -1 || ra.firstWrite <> -1) →
-    OpAt result ra.first 1 r
+            IntMap.mem r raMap ->
+            let ra = raMap.IntMap.view r in
+            (ra.Access.firstRead <> -1 \/ ra.Access.firstWrite <> -1) ->
+            OpAt result ra.Access.first 1 r
 
-  (* Read-only: shared acquire and release *)
+  (************************************************************
+   * READ-ONLY: shared acquire and release
+   ************************************************************)
   ensures forall r:int.
-    IntMap.mem r raMap →
-    let ra = IntMap.find r raMap in
-    HasReadOnly ra →
-      OpAt result ra.firstRead 2 r &&
-      OpAt result ra.lastRead 7 r
+            IntMap.mem r raMap ->
+            let ra = raMap.IntMap.view r in
+            HasReadOnly ra ->
+              OpAt result ra.Access.firstRead 2 r /\
+              OpAt result ra.Access.lastRead 7 r
 
-  (* Write without preceding read: exclusive write *)
+  (************************************************************
+   * WRITE present: proper exclusive coverage
+   * Case A
+   ************************************************************)
   ensures forall r:int.
-    IntMap.mem r raMap →
-    let ra = IntMap.find r raMap in
-    HasWrite ra &&
-    (ra.firstRead = -1 || ra.firstWrite < ra.firstRead) →
-      OpAt result ra.firstWrite 4 r
+            IntMap.mem r raMap ->
+            let ra = raMap.IntMap.view r in
+            HasWrite ra /\
+            (ra.Access.firstRead = -1 \/
+             ra.Access.firstWrite < ra.Access.firstRead) ->
+              OpAt result ra.Access.firstWrite 4 r
 
-  (* Read before write: shared then upgrade *)
+  (************************************************************
+   * Case B: read starts first, then a write happens
+   ************************************************************)
   ensures forall r:int.
-    IntMap.mem r raMap →
-    let ra = IntMap.find r raMap in
-    HasWrite ra && ra.firstRead <> -1 && ra.firstRead < ra.firstWrite →
-      OpAt result ra.firstRead 3 r &&
-      OpAt result ra.firstWrite 5 r
+            IntMap.mem r raMap ->
+            let ra = raMap.IntMap.view r in
+            HasWrite ra /\ ra.Access.firstRead <> -1 /\
+            ra.Access.firstRead < ra.Access.firstWrite ->
+              OpAt result ra.Access.firstRead 3 r /\
+              OpAt result ra.Access.firstWrite 5 r
 
-  (* Closing after write without read tail: release at last write *)
+  (************************************************************
+   * Closing after writes (no read tail)
+   ************************************************************)
   ensures forall r:int.
-    IntMap.mem r raMap →
-    let ra = IntMap.find r raMap in
-    HasWrite ra &&
-    (ra.firstRead = -1 || ra.lastRead < ra.lastWrite) →
-      OpAt result ra.lastWrite 7 r
+            IntMap.mem r raMap ->
+            let ra = raMap.IntMap.view r in
+            HasWrite ra /\
+            (ra.Access.firstRead = -1 \/
+             ra.Access.lastRead < ra.Access.lastWrite) ->
+              OpAt result ra.Access.lastWrite 7 r
 
-  (* Write followed by read: downgrade then release *)
+  (************************************************************
+   * Read tail present after write
+   ************************************************************)
   ensures forall r:int.
-    IntMap.mem r raMap →
-    let ra = IntMap.find r raMap in
-    HasWrite ra && ra.firstRead <> -1 && ra.lastWrite < ra.lastRead →
-      OpAt result ra.lastWrite 6 r &&
-      OpAt result ra.lastRead 7 r
+            IntMap.mem r raMap ->
+            let ra = raMap.IntMap.view r in
+            HasWrite ra /\ ra.Access.firstRead <> -1 /\
+            ra.Access.lastWrite < ra.Access.lastRead ->
+              OpAt result ra.Access.lastWrite 6 r /\
+              OpAt result ra.Access.lastRead 7 r
 *)
