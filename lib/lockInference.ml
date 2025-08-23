@@ -992,27 +992,7 @@ let rec getPair accessMap bindings rOperationsMap counter=
 (* Por fim ela chama a função getPair para cada chave*)
 (*Pre : receber o raMap bem construido
   Pos : devolver o mapa dos resourceOperations bem construido relativos a este raMap*)
-
-(*@ predicate OpAt
-      (m: resourceGroup list IntMap.t) (l:int) (op:int) (r:int) =
-      IntMap.mem l m /\
-      (exists grps: resourceGroup list.
-         (* Replace the next line by your IntMap model accessor if needed *)
-         grps = m.IntMap.view l /\
-         (exists g: resourceGroup.
-            List.mem g grps /\
-            getResult g.ropList { op = op; r = r }))
-*)
-
-(*@ predicate HasReadOnly (ra: Access.resourceAccess) =
-      ra.Access.firstRead <> -1 /\ ra.Access.firstWrite = -1
-*)
-
-(*@ predicate HasWrite (ra: Access.resourceAccess) =
-      ra.Access.firstWrite <> -1
-*)
-
-let computeBindings (raMap: Access.resourceAccess IntMap.t) =
+let computeBindings (raMap:Access.resourceAccess IntMap.t)=
   (*print_string "rOperations Map Generation compute Bindings \n";*)
   let bindingsAccess = IntMap.bindings raMap in
   let bindingsAccess = List.map (fun (k, _) -> k) bindingsAccess in
@@ -1021,9 +1001,7 @@ let computeBindings (raMap: Access.resourceAccess IntMap.t) =
   let newROperationsMap = getPair raMap bindingsAccess rOperationsMap counter in
   newROperationsMap
 (*@
-  (************************************************************
-   * Basic mapping shape properties
-   ************************************************************)
+  (* Basic shape properties (kept from your original) *)
 
   ensures (forall k:int. not (IntMap.mem k raMap)) ->
           (forall l:int. not (IntMap.mem l result))
@@ -1036,67 +1014,119 @@ let computeBindings (raMap: Access.resourceAccess IntMap.t) =
             IntMap.mem k raMap ->
             exists l:int. IntMap.mem l result
 
-  (************************************************************
-   * Availability marker whenever there is any access
-   ************************************************************)
+  (*** Availability marker (opcode 1) when there is any access ***)
   ensures forall r:int.
             IntMap.mem r raMap ->
             let ra = raMap.IntMap.view r in
-            (ra.Access.firstRead <> -1 \/ ra.Access.firstWrite <> -1) ->
-            OpAt result ra.Access.first 1 r
+            (ra.Access.firstRead <> -1 || ra.Access.firstWrite <> -1) ->
+            let l = ra.Access.first in
+            IntMap.mem l result &&
+            (exists grps.
+               grps = result.IntMap.view l /\
+               exists g.
+                 List.mem g grps /\
+                 exists rop.
+                   rop.r = r && rop.op = 1 && getResult g.ropList rop)
 
-  (************************************************************
-   * READ-ONLY: shared acquire and release
-   ************************************************************)
+  (*** READ-ONLY: firstRead -> READ(2), lastRead -> RELEASE(7) ***)
   ensures forall r:int.
             IntMap.mem r raMap ->
             let ra = raMap.IntMap.view r in
-            HasReadOnly ra ->
-              OpAt result ra.Access.firstRead 2 r /\
-              OpAt result ra.Access.lastRead 7 r
+            (ra.Access.firstRead <> -1 && ra.Access.firstWrite = -1) ->
+            let l1 = ra.Access.firstRead in
+            let l2 = ra.Access.lastRead in
+            IntMap.mem l1 result &&
+            (exists grps1.
+               grps1 = result.IntMap.view l1 /\
+               exists g1.
+                 List.mem g1 grps1 /\
+                 exists rop1.
+                   rop1.r = r && rop1.op = 2 && getResult g1.ropList rop1) &&
+            IntMap.mem l2 result &&
+            (exists grps2.
+               grps2 = result.IntMap.view l2 /\
+               exists g2.
+                 List.mem g2 grps2 /\
+                 exists rop2.
+                   rop2.r = r && rop2.op = 7 && getResult g2.ropList rop2)
 
-  (************************************************************
-   * WRITE present: proper exclusive coverage
-   * Case A
-   ************************************************************)
+  (*** WRITE present & (no read OR write starts before read): firstWrite -> WRITE(4) ***)
   ensures forall r:int.
             IntMap.mem r raMap ->
             let ra = raMap.IntMap.view r in
-            HasWrite ra /\
-            (ra.Access.firstRead = -1 \/
-             ra.Access.firstWrite < ra.Access.firstRead) ->
-              OpAt result ra.Access.firstWrite 4 r
+            (ra.Access.firstWrite <> -1 &&
+             (ra.Access.firstRead = -1 || ra.Access.firstWrite < ra.Access.firstRead)) ->
+            let lw = ra.Access.firstWrite in
+            IntMap.mem lw result &&
+            (exists grps.
+               grps = result.IntMap.view lw /\
+               exists g.
+                 List.mem g grps /\
+                 exists rop.
+                   rop.r = r && rop.op = 4 && getResult g.ropList rop)
 
-  (************************************************************
-   * Case B: read starts first, then a write happens
-   ************************************************************)
+  (*** Read before Write: firstRead -> SHARED_BEFORE_EXCLUSIVE(3), firstWrite -> UPGRADE(5) ***)
   ensures forall r:int.
             IntMap.mem r raMap ->
             let ra = raMap.IntMap.view r in
-            HasWrite ra /\ ra.Access.firstRead <> -1 /\
-            ra.Access.firstRead < ra.Access.firstWrite ->
-              OpAt result ra.Access.firstRead 3 r /\
-              OpAt result ra.Access.firstWrite 5 r
+            (ra.Access.firstWrite <> -1 &&
+             ra.Access.firstRead <> -1 &&
+             ra.Access.firstRead < ra.Access.firstWrite) ->
+            let lr = ra.Access.firstRead in
+            let lw = ra.Access.firstWrite in
+            IntMap.mem lr result &&
+            (exists grpsA.
+               grpsA = result.IntMap.view lr /\
+               exists gA.
+                 List.mem gA grpsA /\
+                 exists ropA.
+                   ropA.r = r && ropA.op = 3 && getResult gA.ropList ropA) &&
+            IntMap.mem lw result &&
+            (exists grpsB.
+               grpsB = result.IntMap.view lw /\
+               exists gB.
+                 List.mem gB grpsB /\
+                 exists ropB.
+                   ropB.r = r && ropB.op = 5 && getResult gB.ropList ropB)
 
-  (************************************************************
-   * Closing after writes (no read tail)
-   ************************************************************)
-  ensures forall r:int.
-            IntMap.mem r raMap ->
-            let ra = raMap.IntMap.view r in
-            HasWrite ra /\
-            (ra.Access.firstRead = -1 \/
-             ra.Access.lastRead < ra.Access.lastWrite) ->
-              OpAt result ra.Access.lastWrite 7 r
+  (*** After writes: close correctly ***)
 
-  (************************************************************
-   * Read tail present after write
-   ************************************************************)
+  (* No read tail: lastWrite -> RELEASE(7) *)
   ensures forall r:int.
             IntMap.mem r raMap ->
             let ra = raMap.IntMap.view r in
-            HasWrite ra /\ ra.Access.firstRead <> -1 /\
-            ra.Access.lastWrite < ra.Access.lastRead ->
-              OpAt result ra.Access.lastWrite 6 r /\
-              OpAt result ra.Access.lastRead 7 r
+            (ra.Access.firstWrite <> -1 &&
+             (ra.Access.firstRead = -1 || ra.Access.lastRead < ra.Access.lastWrite)) ->
+            let lw2 = ra.Access.lastWrite in
+            IntMap.mem lw2 result &&
+            (exists grps.
+               grps = result.IntMap.view lw2 /\
+               exists g.
+                 List.mem g grps /\
+                 exists rop.
+                   rop.r = r && rop.op = 7 && getResult g.ropList rop)
+
+  (* Read tail exists: lastWrite -> DOWNGRADE(6) and lastRead -> RELEASE(7) *)
+  ensures forall r:int.
+            IntMap.mem r raMap ->
+            let ra = raMap.IntMap.view r in
+            (ra.Access.firstWrite <> -1 &&
+             ra.Access.firstRead <> -1 &&
+             ra.Access.lastWrite < ra.Access.lastRead) ->
+            let lw3 = ra.Access.lastWrite in
+            let lr2 = ra.Access.lastRead in
+            IntMap.mem lw3 result &&
+            (exists grps1.
+               grps1 = result.IntMap.view lw3 /\
+               exists g1.
+                 List.mem g1 grps1 /\
+                 exists rop1.
+                   rop1.r = r && rop1.op = 6 && getResult g1.ropList rop1) &&
+            IntMap.mem lr2 result &&
+            (exists grps2.
+               grps2 = result.IntMap.view lr2 /\
+               exists g2.
+                 List.mem g2 grps2 /\
+                 exists rop2.
+                   rop2.r = r && rop2.op = 7 && getResult g2.ropList rop2)
 *)
