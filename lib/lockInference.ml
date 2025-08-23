@@ -348,14 +348,17 @@ type rOp = { op : int;
       ResourceClass.guardedBy = resId; ResourceClass.isParameter = false} in
       (IntMap.mem resId newResourceMap && newResourceMap.IntMap.view resId = r) && 
       (IntMap.mem resId newResourceMethodsMap && newResourceMethodsMap.IntMap.view resId = [] ) 
-      (* Proper Handling of Lock Guards: newly created resource is self-guarded *)
-      (newResourceMap.IntMap.view resId).ResourceClass.guardedBy = resId &&
-      (* Frame condition: pre-existing entries unchanged by creation *)
-      (forall k. k <> resId && IntMap.mem k resourceMap ->
-         IntMap.mem k newResourceMap &&
-         newResourceMap.IntMap.view k = resourceMap.IntMap.view k)
- 
-    *)
+
+      (* WRITE-LOCK GUARD: newly created resource is self-guarded *)
+      ensures
+        (newResourceMap.IntMap.view resId).ResourceClass.guardedBy = resId
+
+      (* Frame: pre-existing entries are unchanged by creation *)
+      ensures
+        forall k. k <> resId && IntMap.mem k resourceMap ->
+          IntMap.mem k newResourceMap &&
+          newResourceMap.IntMap.view k = resourceMap.IntMap.view k
+  *)
 
 type resourceGroup = {
   id : int;
