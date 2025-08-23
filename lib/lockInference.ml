@@ -347,7 +347,26 @@ type rOp = { op : int;
       ResourceClass.nature = nature; ResourceClass.whatIs =  whatIs; 
       ResourceClass.guardedBy = resId; ResourceClass.isParameter = false} in
       (IntMap.mem resId newResourceMap && newResourceMap.IntMap.view resId = r) && 
-      (IntMap.mem resId newResourceMethodsMap && newResourceMethodsMap.IntMap.view resId = [] ) *)
+      (IntMap.mem resId newResourceMethodsMap && newResourceMethodsMap.IntMap.view resId = [] ) 
+      
+      (*** Proper Handling of Lock Guards (at creation) ***)
+      (* 1) Reflexive guard: a new resource initially guards itself. *)
+      ensures (newResourceMap.IntMap.view resId).ResourceClass.guardedBy = resId
+
+      (* 2) Frame condition on existing resources: nothing else changes,
+            hence no unintended guard rewiring occurs during creation. *)
+      ensures forall k:int.
+               k <> resId /\ IntMap.mem k resourceMap ->
+               IntMap.mem k newResourceMap /\
+               newResourceMap.IntMap.view k = resourceMap.IntMap.view k
+
+      (* 3) Metadata for methods: the new resource has no recorded methods yet,
+            so transitive locking obligations are vacuously satisfied now and
+            will be established later by the subsumption/guard‑setting phase. *)
+      ensures newResourceMethodsMap.IntMap.view resId = [] /\
+              (forall (m:string). not (List.mem m (newResourceMethodsMap.IntMap.view resId)))
+ 
+    *)
 
 type resourceGroup = {
   id : int;
