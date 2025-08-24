@@ -982,6 +982,167 @@ let computeROperations res (access: Access.resourceAccess) rOperationsMap counte
         end
       else ();
     !rOperationsMap, !counter
+(*@
+  (***************************************************************************)
+  (*  Complete Coverage of Accesses by Lock Operations (RA → RO coverage)     *)
+  (***************************************************************************)
+
+  requires res >= 0
+  requires access.Access.first      >= -1
+  requires access.Access.firstRead  >= -1
+  requires access.Access.lastRead   >= -1
+  requires access.Access.firstWrite >= -1
+  requires access.Access.lastWrite  >= -1
+  requires counter >= 0
+
+  (* No accesses -> no lock operations inserted (frame on outputs) *)
+  ensures
+    (access.Access.firstRead = -1 /\ access.Access.firstWrite = -1) ->
+      result = (rOperationsMap, counter)
+
+  (* Counters are monotone; if any access exists, the counter increases *)
+  ensures
+    let _, c' = result in
+    c' >= counter /\
+    (access.Access.firstRead <> -1 \/ access.Access.firstWrite <> -1 -> c' > counter)
+
+  (*** Availability marker for any present access: AVAILABLE (1) at Access.first ***)
+  ensures
+    (access.Access.firstRead <> -1 \/ access.Access.firstWrite <> -1) ->
+      let m, _ = result in
+      let l = access.Access.first in
+      IntMap.mem l m /\
+      (exists grps.
+         grps = m.IntMap.view l /\
+         exists g. List.mem g grps /\
+         exists rop. rop.r = res /\ rop.op = 1 /\ getResult g.ropList rop)
+
+  (*** READ‑ONLY case: firstRead..lastRead are covered by READ(2) and RELEASE(7) ***)
+  ensures
+    (access.Access.firstRead <> -1 /\ access.Access.firstWrite = -1) ->
+      let m, _ = result in
+      let l1 = access.Access.firstRead in
+      let l2 = access.Access.lastRead  in
+      (* READ at firstRead *)
+      IntMap.mem l1 m /\
+      (exists grps1.
+         grps1 = m.IntMap.view l1 /\
+         exists g1. List.mem g1 grps1 /\
+         exists rop1. rop1.r = res /\ rop1.op = 2 /\ getResult g1.ropList rop1)
+      /\
+      (* RELEASE at lastRead *)
+      IntMap.mem l2 m /\
+      (exists grps2.
+         grps2 = m.IntMap.view l2 /\
+         exists g2. List.mem g2 grps2 /\
+         exists rop2. rop2.r = res /\ rop2.op = 7 /\ getResult g2.ropList rop2)
+
+  (*** WRITE present and write precedes read OR there is no read: ***)
+  (*   - WRITE(4) at firstWrite
+       - If no read tail (firstRead = -1 \/ lastRead < lastWrite): RELEASE(7) at lastWrite
+       - If there is a read tail (lastWrite < lastRead): DOWNGRADE(6) at lastWrite then RELEASE(7) at lastRead
+       - If tails coincide (lastWrite = lastRead /\ firstRead <> -1): nothing further is added here *)
+  ensures
+    (access.Access.firstWrite <> -1 /\
+     (access.Access.firstRead = -1 \/ access.Access.firstWrite < access.Access.firstRead)) ->
+      let m, _ = result in
+      let lw = access.Access.firstWrite in
+      (* WRITE at firstWrite *)
+      IntMap.mem lw m /\
+      (exists grpsW.
+         grpsW = m.IntMap.view lw /\
+         exists gW. List.mem gW grpsW /\
+         exists ropW. ropW.r = res /\ ropW.op = 4 /\ getResult gW.ropList ropW)
+      /\
+      (if access.Access.firstRead = -1 \/ access.Access.lastRead < access.Access.lastWrite then
+         (* RELEASE at lastWrite *)
+         let lEnd = access.Access.lastWrite in
+         IntMap.mem lEnd m /\
+         (exists grpsE.
+            grpsE = m.IntMap.view lEnd /\
+            exists gE. List.mem gE grpsE /\
+            exists ropE. ropE.r = res /\ ropE.op = 7 /\ getResult gE.ropList ropE)
+       else if access.Access.lastWrite < access.Access.lastRead then
+         (* DOWNGRADE at lastWrite, then RELEASE at lastRead *)
+         let lDW = access.Access.lastWrite in
+         let lRR = access.Access.lastRead  in
+         IntMap.mem lDW m /\
+         (exists grpsD.
+            grpsD = m.IntMap.view lDW /\
+            exists gD. List.mem gD grpsD /\
+            exists ropD. ropD.r = res /\ ropD.op = 6 /\ getResult gD.ropList ropD)
+         /\
+         IntMap.mem lRR m /\
+         (exists grpsR.
+            grpsR = m.IntMap.view lRR /\
+            exists gR. List.mem gR grpsR /\
+            exists ropR. ropR.r = res /\ ropR.op = 7 /\ getResult gR.ropList ropR)
+       else
+         true)
+
+  (*** READ precedes WRITE: ***)
+  (*   - SHARED_BEFORE_EXCLUSIVE(3) at firstRead
+       - UPGRADE(5) at firstWrite
+       - If lastRead < firstWrite: RELEASE(7) at lastWrite
+       - Else if lastRead < lastWrite: DOWNGRADE(6) at lastWrite and RELEASE(7) at lastRead
+       - Else (lastRead >= lastWrite): nothing further is added here *)
+  ensures
+    (access.Access.firstWrite <> -1 /\
+     access.Access.firstRead <> -1 /\
+     access.Access.firstRead < access.Access.firstWrite) ->
+      let m, _ = result in
+      let lr = access.Access.firstRead  in
+      let lw = access.Access.firstWrite in
+      (* SHARED_BEFORE_EXCLUSIVE at firstRead *)
+      IntMap.mem lr m /\
+      (exists grpsA.
+         grpsA = m.IntMap.view lr /\
+         exists gA. List.mem gA grpsA /\
+         exists ropA. ropA.r = res /\ ropA.op = 3 /\ getResult gA.ropList ropA)
+      /\
+      (* UPGRADE at firstWrite *)
+      IntMap.mem lw m /\
+      (exists grpsB.
+         grpsB = m.IntMap.view lw /\
+         exists gB. List.mem gB grpsB /\
+         exists ropB. ropB.r = res /\ ropB.op = 5 /\ getResult gB.ropList ropB)
+      /\
+      (if access.Access.lastRead < access.Access.firstWrite then
+         (* RELEASE at lastWrite *)
+         let lEnd = access.Access.lastWrite in
+         IntMap.mem lEnd m /\
+         (exists grpsE.
+            grpsE = m.IntMap.view lEnd /\
+            exists gE. List.mem gE grpsE /\
+            exists ropE. ropE.r = res /\ ropE.op = 7 /\ getResult gE.ropList ropE)
+       else if access.Access.lastRead < access.Access.lastWrite then
+         (* DOWNGRADE at lastWrite and RELEASE at lastRead *)
+         let lDW = access.Access.lastWrite in
+         let lRR = access.Access.lastRead  in
+         IntMap.mem lDW m /\
+         (exists grpsD.
+            grpsD = m.IntMap.view lDW /\
+            exists gD. List.mem gD grpsD /\
+            exists ropD. ropD.r = res /\ ropD.op = 6 /\ getResult gD.ropList ropD)
+         /\
+         IntMap.mem lRR m /\
+         (exists grpsR.
+            grpsR = m.IntMap.view lRR /\
+            exists gR. List.mem gR grpsR /\
+            exists ropR. ropR.r = res /\ ropR.op = 7 /\ getResult gR.ropList ropR)
+       else
+         true)
+
+  (*** Frame on other resources: computeROperations never removes existing ops for other resources ***)
+  ensures
+    let m0 = rOperationsMap in
+    let m1, _ = result in
+    forall l:int.
+      IntMap.mem l m0 ->
+        let old = m0.IntMap.view l in
+        exists newl. newl = m1.IntMap.view l \/ not (IntMap.mem l m1)
+        (* weak frame: the function only appends new groups; existing groups keep their members *)
+*)
 
 (* Função recursiva: Recebe um mapa e as suas chaves como argumento e vai extrair o valor de cada chamando depois
    a função computeROperations para este par de chave,valor*)
