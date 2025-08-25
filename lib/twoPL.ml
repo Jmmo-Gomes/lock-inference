@@ -90,3 +90,44 @@ let twoPhaseLocking (roMap:ResourceGroup.resourceGroup list IntMap.t)=
   let newLastlock = iterate keys roMap 0 in 
   let roMap = findGroups roMap keys newLastlock in 
   roMap
+(*@
+  (***********************************************************************)
+  (*  2PL Guarantees Lock Is Held During Access                           *)
+  (*  This function reorders the RO map so that no resource is accessed   *)
+  (*  before being locked, and no access remains after it is released.    *)
+  (*  Concretely, all RELEASE (op = 7) that occur before the final lock   *)
+  (*  boundary are moved past that boundary.                              *)
+  (***********************************************************************)
+
+  (* Compute the last lock boundary using the original map (before moves). *)
+  ensures
+    let bindings = IntMap.bindings roMap in
+    let keys     = List.map (fun (k, _) -> k) bindings in
+    let ll       = iterate keys roMap 0 in
+
+    (*******************************************************************)
+    (* No RELEASE at or before the final lock boundary in the result.  *)
+    (* “No access after release” is ensured by pushing releases beyond *)
+    (* the last lock; i.e., buckets with labels <= ll contain no 7.    *)
+    (*******************************************************************)
+    forall k:int.
+      IntMap.mem k result /\ k <= ll ->
+      forall g:ResourceGroup.resourceGroup.
+        List.mem g (result.IntMap.view k) ->
+        not (exists op:Roperation.rOp.
+               List.mem op g.ropList /\ op.op = 7);
+
+  (***********************************************************************)
+  (* Preservation of groups: the pass only moves groups between buckets.  *)
+  (* No group is created or lost.                                         *)
+  (***********************************************************************)
+  ensures
+    (* every input group appears in some bucket of the result *)
+    (forall k:int.
+       IntMap.mem k roMap ->
+       let gs = roMap.IntMap.view k in
+       forall g:ResourceGroup.resourceGroup.
+         List.mem g gs ->
+         exists k':int.
+           IntMap.mem k' result /\
+           List.mem g (result.IntMap.view k'))) 
