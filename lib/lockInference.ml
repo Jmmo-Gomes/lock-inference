@@ -1290,14 +1290,3 @@ let computeBindings (raMap:Access.resourceAccess IntMap.t)=
                  exists rop2.
                    rop2.r = r && rop2.op = 7 && getResult g2.ropList rop2)
 *)
-
-let checkNewRGroupSetEmpty newRGroupSet key roMap= 
-  if List.length newRGroupSet = 0 then 
-      IntMap.remove key roMap
-  else IntMap.add key newRGroupSet roMap
-  (* newRoMap = checkNewRGroupSetEmpty newRGroupSet key roMap
-    ensures if List.length newRGroupSet = 0 then
-              newRoMap.IntMap.mem key = false   
-            else 
-              List.length (roMap.IntMap.view key) > List.length (newRoMap.IntMap.view key) 
-  *)
