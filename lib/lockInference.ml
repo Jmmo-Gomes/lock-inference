@@ -1303,18 +1303,18 @@ let checkNewRGroupSetEmpty newRGroupSet key roMap=
   *)
 
 
-let rec ropListTrasverse ropList roMap key (rGroup:ResourceGroup.resourceGroup) lastlock set= 
+let rec ropListTrasverse ropList roMap key (rGroup:resourceGroup) lastlock set= 
  match ropList with 
  | [] -> roMap
- | (x:Roperation.rOp) :: xs ->
+ | (x:rOp) :: xs ->
     let opCode = x.op in
     if opCode = 7 then (* opCode = release*)
-      let newRGroupSet = List.filter ( fun x -> x.ResourceGroup.id <> rGroup.ResourceGroup.id ) set in
+      let newRGroupSet = List.filter ( fun x -> x.id <> rGroup.id ) set in
       let newRoMap = checkNewRGroupSetEmpty newRGroupSet key roMap in 
-      let newRoMap = ROperationsMapGeneration.insertR (lastlock+1) rGroup newRoMap in 
+      let newRoMap = insertR (lastlock+1) rGroup newRoMap in 
       ropListTrasverse xs newRoMap key rGroup lastlock set
     else ropListTrasverse xs roMap key rGroup lastlock set
-  (* newRoMap = ropListTrasverse ropList roMap key (rGroup:ResourceGroup.resourceGroup) lastlock set
+  (* newRoMap = ropListTrasverse ropList roMap key (rGroup:resourceGroup) lastlock set
       variant ropList
       ensures forall rop. List.mem rop ropList ->
       rop.ResourceOperation.op = 7 -> 
@@ -1323,14 +1323,14 @@ let rec ropListTrasverse ropList roMap key (rGroup:ResourceGroup.resourceGroup) 
   *)
 
 (*Função que itera o roMap e determina quais as operações de Release que são realizadas antes do ultima operação de lock e move essas operações de sitio*)
-let rec findGroups (roMap:ResourceGroup.resourceGroup list IntMap.t) keys lastlock= 
+let rec findGroups (roMap:resourceGroup list IntMap.t) keys lastlock= 
   match keys with
   | [] -> roMap
   | x :: xs ->
     let set = IntMap.find x roMap in
     if x < lastlock then 
 
-      let rec iterateSet (set:ResourceGroup.resourceGroup list) roMap key= 
+      let rec iterateSet (set:resourceGroup list) roMap key= 
         match set with 
         | [] -> roMap 
         | x :: xs -> 
@@ -1343,7 +1343,7 @@ let rec findGroups (roMap:ResourceGroup.resourceGroup list IntMap.t) keys lastlo
     else findGroups roMap xs lastlock
     
  
-let rec getLastLock (ropList:Roperation.rOp list) lastlock (key:int)= 
+let rec getLastLock (ropList:rOp list) lastlock (key:int)= 
     match ropList with 
     | [] -> lastlock
     | x :: xs -> 
@@ -1367,7 +1367,7 @@ let rec iterate keys roMap (lastlock: int)=
     let rec iterateSet set (lastlock:int) key= 
       match set with 
       | [] -> lastlock
-      | (x:ResourceGroup.resourceGroup) :: xs -> 
+      | (x:resourceGroup) :: xs -> 
       let newLastlock = getLastLock x.ropList lastlock key in 
       iterateSet xs newLastlock key in 
       
@@ -1375,7 +1375,7 @@ let rec iterate keys roMap (lastlock: int)=
     iterate xs roMap newLastlock
 
 (*Função que itera o roMap e determina qual é o ultima operação que faz um lock no metodo*)
-let twoPhaseLocking (roMap:ResourceGroup.resourceGroup list IntMap.t)= 
+let twoPhaseLocking (roMap:resourceGroup list IntMap.t)= 
   let bindings = IntMap.bindings roMap in
   let keys = List.map (fun (k, _) -> k) bindings in
   let newLastlock = iterate keys roMap 0 in 
