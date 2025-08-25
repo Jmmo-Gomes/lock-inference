@@ -1302,3 +1302,20 @@ let checkNewRGroupSetEmpty newRGroupSet key roMap=
               List.length (roMap.IntMap.view key) > List.length (newRoMap.IntMap.view key) 
   *)
 
+let rec ropListTrasverse (ropList:rOp list)
+                         (roMap:resourceGroup list IntMap.t)
+                         (key:int)
+                         (rGroup:resourceGroup)
+                         (lastlock:int)
+                         (set_at_key:resourceGroup list)
+  : resourceGroup list IntMap.t =
+  match ropList with
+  | [] -> roMap
+  | (x:rOp) :: xs ->
+      if x.op = 7 then
+        let filtered = List.filter (fun g -> g.id <> rGroup.id) set_at_key in
+        let roMap'  = checkNewRGroupSetEmpty filtered key roMap in
+        let roMap'' = insertR (lastlock + 1) rGroup roMap' in
+        ropListTrasverse xs roMap'' key rGroup lastlock set_at_key
+      else
+        ropListTrasverse xs roMap key rGroup lastlock set_at_key
