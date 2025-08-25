@@ -1313,10 +1313,3 @@ let rec ropListTrasverse ropList roMap key (rGroup:resourceGroup) lastlock set=
       let newRoMap = insertR (lastlock+1) rGroup newRoMap in 
       ropListTrasverse xs newRoMap key rGroup lastlock set
     else ropListTrasverse xs roMap key rGroup lastlock set
-  (* newRoMap = ropListTrasverse ropList roMap key (rGroup:resourceGroup) lastlock set
-      variant ropList
-      ensures forall rop. List.mem rop ropList ->
-      rop.op = 7 -> 
-        List.length (newRoMap.IntMap.view (lastlock+1)) > List.length (roMap.IntMap.view (lastlock+1))
-
-  *)
