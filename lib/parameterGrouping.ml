@@ -426,3 +426,47 @@ let parameterGrouping (roMap:ResourceGroup.resourceGroup list IntMap.t)
   let newParameters = addToParameters keys parameters roMap resourceMap in 
   let newRoMap = resource1Cycle keys roMap newParameters handled resourceMap in
   newRoMap
+(*@
+  newRoMap = parameterGrouping roMap resourceMap
+
+  (* Well-formed input: all operations reference known resources *)
+  requires forall lbl:int.
+             IntMap.mem lbl roMap ->
+             forall rg:ResourceGroup.resourceGroup.
+               List.mem rg (IntMap.view lbl roMap) ->
+               forall rop:Roperation.rOp.
+                 List.mem rop rg.ResourceGroup.ropList ->
+                 IntMap.mem rop.r resourceMap
+
+  (* Preservation: every group from the input roMap is still represented in newRoMap *)
+  ensures forall lbl:int.
+             IntMap.mem lbl roMap ->
+             IntMap.mem lbl newRoMap
+
+  (* Correct grouping: if two resources r1 and r2 were in roMap with
+     operations op1 and op2 such that
+       - resourceMap[r1].isParameter = true
+       - resourceMap[r1].nature = resourceMap[r2].nature
+       - resourceMap[r1].ty     = resourceMap[r2].ty
+       - conflict op1 op2 = true
+     then r1 and r2 occur together in the same resourceGroup of newRoMap. *)
+  ensures forall r1:int, r2:int, op1:int, op2:int, lbl1:int, lbl2:int, rg1:ResourceGroup.resourceGroup, rg2:ResourceGroup.resourceGroup.
+            IntMap.mem lbl1 roMap &&
+            List.mem rg1 (IntMap.view lbl1 roMap) &&
+            List.mem {op = op1; r = r1} rg1.ResourceGroup.ropList &&
+            IntMap.mem lbl2 roMap &&
+            List.mem rg2 (IntMap.view lbl2 roMap) &&
+            List.mem {op = op2; r = r2} rg2.ResourceGroup.ropList &&
+            IntMap.mem r1 resourceMap &&
+            IntMap.mem r2 resourceMap &&
+            (IntMap.view r1 resourceMap).ResourceClass.isParameter &&
+            (IntMap.view r1 resourceMap).ResourceClass.nature = (IntMap.view r2 resourceMap).ResourceClass.nature &&
+            (IntMap.view r1 resourceMap).ResourceClass.ty = (IntMap.view r2 resourceMap).ResourceClass.ty &&
+            conflict op1 op2
+            ->
+            exists lbl:int, rg:ResourceGroup.resourceGroup.
+              IntMap.mem lbl newRoMap &&
+              List.mem rg (IntMap.view lbl newRoMap) &&
+              List.mem {op = op1; r = r1} rg.ResourceGroup.ropList &&
+              List.mem {op = op2; r = r2} rg.ResourceGroup.ropList
+*)

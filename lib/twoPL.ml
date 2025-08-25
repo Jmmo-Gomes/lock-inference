@@ -92,11 +92,11 @@ let twoPhaseLocking (roMap:ResourceGroup.resourceGroup list IntMap.t)=
   roMap
 (*@
   (***********************************************************************)
-  (*  2PL Guarantees Lock Is Held During Access                           *)
-  (*  This function reorders the RO map so that no resource is accessed   *)
-  (*  before being locked, and no access remains after it is released.    *)
-  (*  Concretely, all RELEASE (op = 7) that occur before the final lock   *)
-  (*  boundary are moved past that boundary.                              *)
+  (*  2PL Guarantees Lock Is Held During Access                          *)
+  (*  This function reorders the RO map so that no resource is accessed  *)
+  (*  before being locked, and no access remains after it is released.   *)
+  (*  Concretely, all RELEASE (op = 7) that occur before the final lock  *)
+  (*  boundary are moved past that boundary.                             *)
   (***********************************************************************)
 
   (* Compute the last lock boundary using the original map (before moves). *)
@@ -118,8 +118,8 @@ let twoPhaseLocking (roMap:ResourceGroup.resourceGroup list IntMap.t)=
                List.mem op g.ropList /\ op.op = 7);
 
   (***********************************************************************)
-  (* Preservation of groups: the pass only moves groups between buckets.  *)
-  (* No group is created or lost.                                         *)
+  (* Preservation of groups: the pass only moves groups between buckets. *)
+  (* No group is created or lost.                                        *)
   (***********************************************************************)
   ensures
     (* every input group appears in some bucket of the result *)
