@@ -1301,3 +1301,91 @@ let checkNewRGroupSetEmpty newRGroupSet key roMap=
             else 
               List.length (roMap.IntMap.view key) > List.length (newRoMap.IntMap.view key) 
   *)
+
+(* helper: remove all groups with a given id from a list *)
+let rec drop_id id = function
+  | [] -> []
+  | g :: gs ->
+      if g.id = id
+      then drop_id id gs
+      else g :: drop_id id gs
+
+(* scan a group's ops; on RELEASE(7) in a pre-lock bucket, move group to (lastlock+1) *)
+let rec ropListTrasverse (ropList:rOp list)
+                         (roMap:resourceGroup list IntMap.t)
+                         (key:int)
+                         (rGroup:resourceGroup)
+                         (lastlock:int)
+                         (set_at_key:resourceGroup list)
+  : resourceGroup list IntMap.t =
+  match ropList with
+  | [] -> roMap
+  | (x:rOp) :: xs ->
+      if x.op = 7 then
+        let filtered = drop_id rGroup.id set_at_key in
+        let roMap'  = checkNewRGroupSetEmpty filtered key roMap in
+        let roMap'' = insertR (lastlock + 1) rGroup roMap' in
+        ropListTrasverse xs roMap'' key rGroup lastlock set_at_key
+      else
+        ropListTrasverse xs roMap key rGroup lastlock set_at_key
+
+(* iterate buckets; for keys < lastlock push early releases forward *)
+let rec findGroups (roMap:resourceGroup list IntMap.t)
+                   (keys:int list)
+                   (lastlock:int)
+  : resourceGroup list IntMap.t =
+  match keys with
+  | [] -> roMap
+  | k :: ks ->
+      let set = try IntMap.find k roMap with Not_found -> [] in
+      if k < lastlock then
+        let rec iterSet (s:resourceGroup list)
+                        (acc:resourceGroup list IntMap.t)
+                        (key:int)
+          : resourceGroup list IntMap.t =
+          match s with
+          | [] -> acc
+          | g :: rest ->
+              let acc' = ropListTrasverse g.ropList acc key g lastlock set in
+              iterSet rest acc' key
+        in
+        let roMap' = iterSet set roMap k in
+        findGroups roMap' ks lastlock
+      else
+        findGroups roMap ks lastlock
+
+(* compute the last label at which a lock op appears *)
+let rec getLastLock (ops:rOp list) (lastlock:int) (key:int) : int =
+  match ops with
+  | [] -> lastlock
+  | x :: xs ->
+      if x.op = 2 || x.op = 4 || x.op = 5
+      then getLastLock xs key key
+      else getLastLock xs lastlock key
+
+(* fold over all buckets to find global last lock label *)
+let rec iterate (keys:int list)
+                (roMap:resourceGroup list IntMap.t)
+                (lastlock:int)
+  : int =
+  match keys with
+  | [] -> lastlock
+  | k :: ks ->
+      let set = try IntMap.find k roMap with Not_found -> [] in
+      let rec iterSet (s:resourceGroup list) (acc:int) (key:int) : int =
+        match s with
+        | [] -> acc
+        | g :: rest ->
+            let acc' = getLastLock g.ropList acc key in
+            iterSet rest acc' key
+      in
+      let last' = iterSet set lastlock k in
+      iterate ks roMap last'
+
+(* main 2PL pass: push releases that occur before the final lock past it *)
+let twoPhaseLocking (roMap:resourceGroup list IntMap.t)= 
+  let bindings = IntMap.bindings roMap in
+  let keys = List.map (fun (k, _) -> k) bindings in
+  let newLastlock = iterate keys roMap 0 in 
+  let roMap = findGroups roMap keys newLastlock in 
+  roMap
