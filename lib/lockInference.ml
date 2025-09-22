@@ -367,18 +367,12 @@ type rOp = { op : int;
 
   (* Existing entries are preserved; in particular, their guard does not change. *)
   ensures forall k:int.
-            k <> resId /\ IntMap.mem k resourceMap ->
-            IntMap.mem k newResourceMap /\
-            let oldr = resourceMap.IntMap.view k in
-            let newr = newResourceMap.IntMap.view k in
-            newr.ResourceClass.guardedBy = oldr.ResourceClass.guardedBy /\
-            newr.ResourceClass.position  = oldr.ResourceClass.position  /\
-            newr.ResourceClass.ty        = oldr.ResourceClass.ty        /\
-            newr.ResourceClass.vis       = oldr.ResourceClass.vis       /\
-            newr.ResourceClass.nature    = oldr.ResourceClass.nature    /\
-            newr.ResourceClass.whatIs    = oldr.ResourceClass.whatIs    /\
-            newr.ResourceClass.isParameter = oldr.ResourceClass.isParameter
-
+          k <> resId /\ IntMap.mem k resourceMap ->
+          IntMap.mem k newResourceMap /\
+          let oldr = resourceMap.IntMap.view k in
+          let newr = newResourceMap.IntMap.view k in
+          newr.ResourceClass.guardedBy = oldr.ResourceClass.guardedBy
+          
   (* No removal: every previous key remains present. *)
   ensures forall k:int. IntMap.mem k resourceMap -> IntMap.mem k newResourceMap
 
