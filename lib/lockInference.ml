@@ -340,14 +340,10 @@ type rOp = { op : int;
     let newResourceMap = IntMap.add resId r resourceMap in 
     let newResourceMethodsMap = IntMap.add resId [] resourceMethodsMap in 
     newResourceMap, newResourceMethodsMap
-    (*@newResourceMap, newResourceMethodsMap = computeResource resId typ visib nature whatIs resourceMap resourceMethodsMap
-      requires resId >= 0
-      ensures  let (r:ResourceClass.resource) = 
-      {ResourceClass.position = resId; ResourceClass.ty = typ; ResourceClass.vis = visib;
-      ResourceClass.nature = nature; ResourceClass.whatIs =  whatIs; 
-      ResourceClass.guardedBy = resId; ResourceClass.isParameter = false} in
-      (IntMap.mem resId newResourceMap && newResourceMap.IntMap.view resId = r) && 
-      (IntMap.mem resId newResourceMethodsMap && newResourceMethodsMap.IntMap.view resId = [] ) 
+    (*@ newResourceMap, newResourceMethodsMap = computeResource
+      resId typ visib nature whatIs resourceMap resourceMethodsMap
+
+  requires resId >= 0
 
   (* The new entry is present with the exact record values built above. *)
   ensures let r0:ResourceClass.resource =
