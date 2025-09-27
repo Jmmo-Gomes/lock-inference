@@ -469,4 +469,24 @@ let parameterGrouping (roMap:ResourceGroup.resourceGroup list IntMap.t)
               List.mem rg (IntMap.view lbl newRoMap) &&
               List.mem {op = op1; r = r1} rg.ResourceGroup.ropList &&
               List.mem {op = op2; r = r2} rg.ResourceGroup.ropList
+
+    (* Transitivity: if r1 grouped with r2 and r2 grouped with r3, then r1 and r3
+     also appear together in the same group in newRoMap. *)
+  ensures forall r1:int, r2:int, r3:int.
+            (exists lbl:int, rg:ResourceGroup.resourceGroup.
+                IntMap.mem lbl newRoMap &&
+                List.mem rg (IntMap.view lbl newRoMap) &&
+                List.mem {op = 0; r = r1} rg.ResourceGroup.ropList &&
+                List.mem {op = 0; r = r2} rg.ResourceGroup.ropList) &&
+            (exists lbl:int, rg:ResourceGroup.resourceGroup.
+                IntMap.mem lbl newRoMap &&
+                List.mem rg (IntMap.view lbl newRoMap) &&
+                List.mem {op = 0; r = r2} rg.ResourceGroup.ropList &&
+                List.mem {op = 0; r = r3} rg.ResourceGroup.ropList)
+            ->
+            exists lbl:int, rg:ResourceGroup.resourceGroup.
+              IntMap.mem lbl newRoMap &&
+              List.mem rg (IntMap.view lbl newRoMap) &&
+              List.mem {op = 0; r = r1} rg.ResourceGroup.ropList &&
+              List.mem {op = 0; r = r3} rg.ResourceGroup.ropList
 *)

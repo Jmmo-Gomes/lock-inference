@@ -130,5 +130,25 @@ let twoPhaseLocking (roMap:ResourceGroup.resourceGroup list IntMap.t)=
          List.mem g gs ->
          exists k':int.
            IntMap.mem k' result /\
-           List.mem g (result.IntMap.view k'))) 
+           List.mem g (result.IntMap.view k')))
+
+  (***********************************************************************)
+  (* Shrinking phase discipline (full 2PL):                              *)
+  (* Once a RELEASE (7) or DOWNGRADE (6) appears at bucket k in result,  *)
+  (* no later/equal bucket contains an ACQUIRE (READ=2, WRITE=4, UPG=5). *)
+  (***********************************************************************)
+  ensures
+    forall k:int.
+      IntMap.mem k result ->
+      forall g:ResourceGroup.resourceGroup.
+        List.mem g (result.IntMap.view k) ->
+        (exists op:Roperation.rOp.
+           List.mem op g.ropList /\ (op.op = 7 \/ op.op = 6)) ->
+          forall k2:int.
+            k2 >= k /\ IntMap.mem k2 result ->
+            forall g2:ResourceGroup.resourceGroup.
+              List.mem g2 (result.IntMap.view k2) ->
+              not (exists op2:Roperation.rOp.
+                     List.mem op2 g2.ropList /\
+                     (op2.op = 2 \/ op2.op = 4 \/ op2.op = 5))
 *)

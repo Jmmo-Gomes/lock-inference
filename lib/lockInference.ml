@@ -343,46 +343,46 @@ type rOp = { op : int;
     (*@ newResourceMap, newResourceMethodsMap = computeResource
       resId typ visib nature whatIs resourceMap resourceMethodsMap
 
-  requires resId >= 0
+      requires resId >= 0
 
-  (* The new entry is present with the exact record values built above. *)
-  ensures let r0:ResourceClass.resource =
-            { ResourceClass.position   = resId;
-              ResourceClass.ty        = typ;
-              ResourceClass.vis       = visib;
-              ResourceClass.nature    = nature;
-              ResourceClass.whatIs    = whatIs;
-              ResourceClass.guardedBy = resId;
-              ResourceClass.isParameter = false } in
-          IntMap.mem resId newResourceMap /\
-          newResourceMap.IntMap.view resId = r0
+      (* The new entry is present with the exact record values built above. *)
+      ensures let r0:ResourceClass.resource =
+                { ResourceClass.position   = resId;
+                  ResourceClass.ty        = typ;
+                  ResourceClass.vis       = visib;
+                  ResourceClass.nature    = nature;
+                  ResourceClass.whatIs    = whatIs;
+                  ResourceClass.guardedBy = resId;
+                  ResourceClass.isParameter = false } in
+              IntMap.mem resId newResourceMap /\
+              newResourceMap.IntMap.view resId = r0
 
-  (* Method list for the new resource starts empty. *)
-  ensures IntMap.mem resId newResourceMethodsMap /\
-          newResourceMethodsMap.IntMap.view resId = []
+      (* Method list for the new resource starts empty. *)
+      ensures IntMap.mem resId newResourceMethodsMap /\
+              newResourceMethodsMap.IntMap.view resId = []
 
-  (* Self-guard baseline: the freshly created resource is guarded by itself. *)
-  ensures let nr = newResourceMap.IntMap.view resId in
-          nr.ResourceClass.guardedBy = resId
+      (* Self-guard baseline: the freshly created resource is guarded by itself. *)
+      ensures let nr = newResourceMap.IntMap.view resId in
+              nr.ResourceClass.guardedBy = resId
 
-  (* Existing entries are preserved; in particular, their guard does not change. *)
-  ensures forall k:int.
-          k <> resId /\ IntMap.mem k resourceMap ->
-          IntMap.mem k newResourceMap /\
-          let oldr = resourceMap.IntMap.view k in
-          let newr = newResourceMap.IntMap.view k in
-          newr.ResourceClass.guardedBy = oldr.ResourceClass.guardedBy
-          
-  (* No removal: every previous key remains present. *)
-  ensures forall k:int. IntMap.mem k resourceMap -> IntMap.mem k newResourceMap
+      (* Existing entries are preserved; in particular, their guard does not change. *)
+      ensures forall k:int.
+              k <> resId /\ IntMap.mem k resourceMap ->
+              IntMap.mem k newResourceMap /\
+              let oldr = resourceMap.IntMap.view k in
+              let newr = newResourceMap.IntMap.view k in
+              newr.ResourceClass.guardedBy = oldr.ResourceClass.guardedBy
+              
+      (* No removal: every previous key remains present. *)
+      ensures forall k:int. IntMap.mem k resourceMap -> IntMap.mem k newResourceMap
 
-  (* Guard pointers are well-formed in the resulting map:
-         every resource’s guard id points to itself or to an existing entry. *)
-  ensures forall k:int.
-            IntMap.mem k newResourceMap ->
-            let rk = newResourceMap.IntMap.view k in
-            rk.ResourceClass.guardedBy = k \/
-            IntMap.mem rk.ResourceClass.guardedBy newResourceMap
+      (* Guard pointers are well-formed in the resulting map:
+            every resource’s guard id points to itself or to an existing entry. *)
+      ensures forall k:int.
+                IntMap.mem k newResourceMap ->
+                let rk = newResourceMap.IntMap.view k in
+                rk.ResourceClass.guardedBy = k \/
+                IntMap.mem rk.ResourceClass.guardedBy newResourceMap
 
   *)
 
